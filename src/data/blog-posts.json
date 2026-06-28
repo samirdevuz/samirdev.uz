@@ -1,0 +1,41 @@
+[
+  {
+    "title": "Building MilliyPrep",
+    "slug": "building-milliyprep",
+    "date": "2026-06-28",
+    "category": "EdTech",
+    "excerpt": "Notes on building a focused exam-preparation platform for Uzbek learners.",
+    "readingTime": "3 min read",
+    "content": [
+      "MilliyPrep is about making exam preparation feel focused, modern, and easier to navigate. The product direction is simple: help learners find the right subject, understand what to practice, and keep moving without unnecessary noise.",
+      "The design goal is a clean study experience for Uzbekistan's Milliy Sertifikat exams. That means strong structure, readable interfaces, and product decisions that support learning instead of distracting from it.",
+      "As the project grows, I want MilliyPrep to become a place where frontend quality, EdTech thinking, and practical learning tools come together."
+    ]
+  },
+  {
+    "title": "Why I Like Minimal Interfaces",
+    "slug": "why-i-like-minimal-interfaces",
+    "date": "2026-06-20",
+    "category": "Design",
+    "excerpt": "Thoughts on clean UI, spacing, typography, and product feel.",
+    "readingTime": "2 min read",
+    "content": [
+      "Minimal interfaces are not empty interfaces. They are interfaces where each detail has a reason: spacing, contrast, typography, hierarchy, and interaction all work together.",
+      "I like designs that feel calm and useful. A product should be easy to understand quickly, but still feel polished when someone spends more time with it.",
+      "Good minimal design is careful. It removes decoration, but it does not remove personality or quality."
+    ]
+  },
+  {
+    "title": "Using AI Tools as a Developer",
+    "slug": "using-ai-tools-as-a-developer",
+    "date": "2026-06-12",
+    "category": "AI",
+    "excerpt": "How AI coding tools can improve speed, learning, and product iteration.",
+    "readingTime": "3 min read",
+    "content": [
+      "AI tools are useful when they help turn ideas into working software faster, but they still need direction, judgment, and review.",
+      "For development, I see AI as a way to explore implementation options, understand code, improve iteration speed, and learn faster while still building real understanding.",
+      "The best use of AI is not to replace thinking. It is to make the feedback loop shorter so better products can be built with more focus."
+    ]
+  }
+]

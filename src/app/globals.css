@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfbf8;
+  --foreground: #141414;
+  --muted: #6f706d;
+  --line: #e4e2dc;
+  --panel: #ffffff;
+  --panel-soft: #f4f3ef;
+  --accent: #2f4f46;
+  --accent-soft: #dfeae4;
+  --shadow: 0 24px 80px rgba(25, 28, 24, 0.08);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
+  --color-panel-soft: var(--panel-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --background: #090a09;
+  --foreground: #f3f1eb;
+  --muted: #aaa8a0;
+  --line: #252722;
+  --panel: #10110f;
+  --panel-soft: #171914;
+  --accent: #9db8a6;
+  --accent-soft: #1b2a22;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
