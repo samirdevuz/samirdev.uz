@@ -66,7 +66,7 @@ function LogoMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-panel shadow-sm",
+        "relative flex h-10 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-[0_10px_28px_rgba(20,20,20,0.13)] ring-1 ring-black/5 dark:border-white/12 dark:bg-white",
         className,
       )}
       aria-hidden="true"
@@ -74,9 +74,9 @@ function LogoMark({ className }: { className?: string }) {
       <Image
         src="/logo-premium.png"
         alt=""
-        className="size-full object-cover"
-        width={32}
-        height={32}
+        className="size-full object-contain"
+        width={56}
+        height={40}
       />
     </span>
   );
@@ -861,26 +861,26 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
         onToggleTheme={() => setTheme(isDark ? "light" : "dark")}
       />
 
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-line/75 bg-background/82 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-line/70 bg-background/86 backdrop-blur-xl">
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
           <a
             href="#home"
-            className="group flex min-w-0 items-center gap-3 text-sm font-semibold tracking-tight"
+            className="group flex min-w-0 items-center gap-3 text-sm font-semibold tracking-tight text-foreground"
             aria-label="Samir Abdumo'minov home"
           >
-            <LogoMark className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+            <LogoMark className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_14px_34px_rgba(20,20,20,0.16)]" />
             <span className="hidden sm:inline">Samir Abdumo&apos;minov</span>
           </a>
 
-          <div className="hidden items-center gap-1 rounded-full border border-line bg-panel/75 p-1 shadow-sm lg:flex">
+          <div className="hidden items-center gap-1 rounded-full border border-line/90 bg-panel/88 p-1 shadow-[0_14px_44px_rgba(20,20,20,0.08)] ring-1 ring-foreground/[0.03] backdrop-blur-xl dark:bg-panel/78 dark:shadow-[0_14px_44px_rgba(0,0,0,0.32)] lg:flex">
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={item.href}
                 className={cn(
-                  "rounded-full px-3 py-1.5 text-sm text-muted transition-all duration-300 hover:text-foreground",
+                  "rounded-full px-3.5 py-2 text-sm font-medium text-muted transition-all duration-300 hover:bg-panel-soft hover:text-foreground",
                   activeSection === item.id &&
-                    "bg-foreground text-background shadow-sm hover:text-background",
+                    "bg-[linear-gradient(135deg,var(--foreground),var(--accent))] text-background shadow-[0_8px_22px_rgba(20,20,20,0.16)] hover:text-background dark:bg-[linear-gradient(135deg,var(--foreground),var(--accent))] dark:text-background",
                 )}
               >
                 {item.label}
@@ -892,7 +892,7 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
-              className="hidden h-9 items-center justify-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent md:inline-flex"
+              className="hidden h-10 items-center justify-center gap-2 rounded-full border border-line bg-panel/90 px-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35 md:inline-flex"
             >
               <Command size={14} />
               <span>Menu</span>
@@ -901,7 +901,7 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
             <button
               type="button"
               onClick={() => setTheme(isDark ? "light" : "dark")}
-              className="flex size-9 items-center justify-center rounded-full border border-line bg-panel text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+              className="flex size-10 items-center justify-center rounded-full border border-line bg-panel/90 text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35"
               aria-label="Toggle color theme"
             >
               <Sun size={16} className="hidden dark:block" />
