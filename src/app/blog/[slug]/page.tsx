@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { blogPosts, getPostBySlug } from "@/data/blog";
+import { getPostBySlug } from "@/data/blog-store";
+
+export const dynamic = "force-dynamic";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
-}
-
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {};
@@ -26,7 +24,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     notFound();

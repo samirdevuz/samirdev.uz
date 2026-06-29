@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { blogPosts } from "@/data/blog";
+import { getAllPosts } from "@/data/blog-store";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Blog",
@@ -8,7 +10,9 @@ export const metadata = {
     "Posts, notes, and updates from Samir Abdumo'minov about web development, AI tools, EdTech, and product design.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getAllPosts();
+
   return (
     <main className="min-h-screen bg-background px-5 py-24 text-foreground sm:px-8">
       <div className="mx-auto max-w-5xl">

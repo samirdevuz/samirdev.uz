@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/data/blog";
+import { getAllPosts } from "@/data/blog-store";
 
 const siteUrl = "https://samirdev.uz";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = "force-dynamic";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const blogPosts = await getAllPosts();
   const blogRoutes = blogPosts.map((post) => ({
     url: `${siteUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),

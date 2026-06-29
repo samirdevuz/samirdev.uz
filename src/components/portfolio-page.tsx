@@ -20,7 +20,10 @@ import {
   TerminalSquare,
   X,
 } from "lucide-react";
-import { blogPosts } from "@/data/blog";
+import type { BlogPost } from "@/data/blog";
+
+const githubUrl = "https://github.com/samirdevuz";
+const telegramUrl = "https://t.me/samirdevuz";
 
 const navItems = [
   { label: "Home", href: "#home", id: "home" },
@@ -136,7 +139,8 @@ const projects = [
       "Helps Uzbek learners prepare across subjects without a cluttered or outdated learning interface.",
     stack: ["Next.js", "EdTech", "Product design"],
     demo: "https://milliyprep.xyz",
-    github: "#",
+    github: githubUrl,
+    visual: "milliyprep",
   },
   {
     name: "AI Study Assistant",
@@ -148,6 +152,7 @@ const projects = [
     stack: ["AI", "React", "Learning tools"],
     demo: "#",
     github: "#",
+    visual: "ai",
   },
   {
     name: "Personal Portfolio",
@@ -158,7 +163,8 @@ const projects = [
       "Creates a stronger first impression than a plain resume-style page or generic template.",
     stack: ["Next.js", "Tailwind CSS", "Framer Motion"],
     demo: "#",
-    github: "#",
+    github: githubUrl,
+    visual: "portfolio",
   },
   {
     name: "Web Tools Collection",
@@ -170,6 +176,7 @@ const projects = [
     stack: ["TypeScript", "Utilities", "Automation"],
     demo: "#",
     github: "#",
+    visual: "tools",
   },
 ];
 
@@ -520,7 +527,7 @@ function HeroVisual() {
 
 function MilliyPrepPreview() {
   return (
-    <div className="relative min-h-[360px] overflow-hidden rounded-xl border border-line bg-background/70 p-4">
+    <div className="relative min-h-[430px] overflow-hidden rounded-xl border border-line bg-background/70 p-4">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--line)_1px,transparent_1px),linear-gradient(to_bottom,var(--line)_1px,transparent_1px)] bg-[size:42px_42px] opacity-35" />
       <div className="relative rounded-lg border border-line bg-panel shadow-[var(--shadow)]">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
@@ -538,38 +545,96 @@ function MilliyPrepPreview() {
             Live
           </span>
         </div>
-        <div className="grid gap-4 p-4 sm:grid-cols-[0.8fr_1.2fr]">
-          <div className="space-y-2">
-            {["Math", "English", "History", "Biology"].map((subject) => (
-              <div
-                key={subject}
-                className="rounded-md border border-line bg-panel-soft px-3 py-2 text-sm"
-              >
-                {subject}
+        <div className="grid gap-4 p-4 lg:grid-cols-[0.72fr_1.28fr]">
+          <div className="space-y-3">
+            <div className="rounded-lg border border-line bg-background/80 p-3">
+              <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">
+                Subjects
+              </p>
+              <div className="mt-3 space-y-2">
+                {["Mathematics", "English", "History", "Biology"].map(
+                  (subject, index) => (
+                    <div
+                      key={subject}
+                      className="flex items-center justify-between rounded-md border border-line bg-panel-soft px-3 py-2 text-sm"
+                    >
+                      <span>{subject}</span>
+                      <span className="font-mono text-xs text-muted">
+                        {index + 4} modules
+                      </span>
+                    </div>
+                  ),
+                )}
               </div>
-            ))}
+            </div>
+            <div className="rounded-lg border border-line bg-foreground p-4 text-background">
+              <p className="font-mono text-xs opacity-70">learner focus</p>
+              <p className="mt-2 text-sm font-medium">
+                Clear paths for Uzbek exam preparation.
+              </p>
+            </div>
           </div>
-          <div className="rounded-lg border border-line bg-background/80 p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">
-                  Milliy Sertifikat Preparation
+          <div className="grid gap-4">
+            <div className="rounded-lg border border-line bg-background/80 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">
+                    Milliy Sertifikat Preparation
+                  </p>
+                  <p className="mt-1 text-xs text-muted">Focused study flow</p>
+                </div>
+                <p className="font-mono text-xs text-accent">74%</p>
+              </div>
+              <div className="mt-4 h-2 rounded-full bg-line">
+                <div className="h-full w-[74%] rounded-full bg-accent" />
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-md bg-panel-soft p-3">
+                  <p className="font-mono text-lg font-semibold">24</p>
+                  <p className="text-xs text-muted">Topics</p>
+                </div>
+                <div className="rounded-md bg-panel-soft p-3">
+                  <p className="font-mono text-lg font-semibold">8</p>
+                  <p className="text-xs text-muted">Subjects</p>
+                </div>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-line bg-background/80 p-4">
+                <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">
+                  Practice
                 </p>
-                <p className="mt-1 text-xs text-muted">Focused study flow</p>
+                <p className="mt-3 text-sm font-medium">Question set</p>
+                <div className="mt-4 space-y-2">
+                  {["A", "B", "C"].map((option, index) => (
+                    <div
+                      key={option}
+                      className={cn(
+                        "rounded-md border px-3 py-2 text-xs",
+                        index === 1
+                          ? "border-accent bg-accent-soft text-accent"
+                          : "border-line bg-panel-soft text-muted",
+                      )}
+                    >
+                      Option {option}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className="font-mono text-xs text-accent">74%</p>
-            </div>
-            <div className="mt-4 h-2 rounded-full bg-line">
-              <div className="h-full w-[74%] rounded-full bg-accent" />
-            </div>
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-md bg-panel-soft p-3">
-                <p className="font-mono text-lg font-semibold">24</p>
-                <p className="text-xs text-muted">Topics</p>
-              </div>
-              <div className="rounded-md bg-panel-soft p-3">
-                <p className="font-mono text-lg font-semibold">8</p>
-                <p className="text-xs text-muted">Subjects</p>
+              <div className="rounded-lg border border-line bg-background/80 p-4">
+                <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">
+                  Review
+                </p>
+                <p className="mt-3 text-sm font-medium">Study analytics</p>
+                <div className="mt-4 flex h-24 items-end gap-2">
+                  {[42, 68, 54, 82, 76].map((height, index) => (
+                    <span
+                      key={height}
+                      className="flex-1 rounded-t bg-accent/70"
+                      style={{ height: `${height}%`, opacity: 0.45 + index * 0.1 }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -579,7 +644,103 @@ function MilliyPrepPreview() {
   );
 }
 
-export function PortfolioPage() {
+function ProjectMockup({ type }: { type: string }) {
+  if (type === "milliyprep") {
+    return (
+      <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
+        <div className="rounded-lg border border-line bg-background p-4">
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-xs text-accent">MilliyPrep preview</p>
+            <span className="size-2 rounded-full bg-accent" />
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[0.72fr_1.28fr]">
+            <div className="space-y-2">
+              {["Math", "English", "Biology"].map((subject) => (
+                <div
+                  key={subject}
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-xs text-muted"
+                >
+                  {subject}
+                </div>
+              ))}
+            </div>
+            <div className="rounded-md border border-line bg-panel p-3">
+              <div className="flex justify-between text-xs">
+                <span>Exam progress</span>
+                <span className="font-mono text-accent">74%</span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-line">
+                <div className="h-full w-[74%] rounded-full bg-accent" />
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {[12, 18, 24].map((value) => (
+                  <div key={value} className="rounded bg-panel-soft p-2">
+                    <p className="font-mono text-sm">{value}</p>
+                    <p className="text-[10px] text-muted">sets</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "portfolio") {
+    return (
+      <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
+        <div className="rounded-lg border border-line bg-background p-4">
+          <div className="flex items-center justify-between border-b border-line pb-3">
+            <span className="font-mono text-xs text-accent">samir.dev</span>
+            <div className="flex gap-1">
+              <span className="h-1.5 w-8 rounded-full bg-accent" />
+              <span className="h-1.5 w-8 rounded-full bg-line" />
+              <span className="h-1.5 w-8 rounded-full bg-line" />
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
+            <div>
+              <div className="h-3 w-2/3 rounded bg-foreground/80" />
+              <div className="mt-3 space-y-2">
+                <div className="h-2 rounded bg-line" />
+                <div className="h-2 w-4/5 rounded bg-line" />
+                <div className="h-2 w-3/5 rounded bg-line" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="aspect-square rounded-md border border-line bg-panel" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
+      <div className="rounded-lg border border-line bg-background p-4">
+        <div className="flex items-center gap-2 font-mono text-xs text-accent">
+          <TerminalSquare size={14} />
+          <span>{type === "ai" ? "study-assistant.ts" : "tools-lab.ts"}</span>
+        </div>
+        <div className="mt-4 space-y-2 font-mono text-xs text-muted">
+          {(type === "ai"
+            ? ["summarize(notes)", "buildStudyPlan(topic)", "explainClearly()"]
+            : ["formatText()", "generateSlug()", "cleanWorkflow()"]
+          ).map((line) => (
+            <div key={line} className="rounded-md border border-line bg-panel px-3 py-2">
+              <span className="text-accent">const</span> {line}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
   const [activeSection, setActiveSection] = useState("home");
   const [commandOpen, setCommandOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -704,7 +865,8 @@ export function PortfolioPage() {
               className="flex size-9 items-center justify-center rounded-full border border-line bg-panel text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
               aria-label="Toggle color theme"
             >
-              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+              <Sun size={16} className="hidden dark:block" />
+              <Moon size={16} className="dark:hidden" />
             </button>
           </div>
         </nav>
@@ -1047,6 +1209,7 @@ export function PortfolioPage() {
                     {project.problem}
                   </p>
                 </div>
+                <ProjectMockup type={project.visual} />
                 <div className="mt-6 flex flex-wrap gap-2">
                   {project.stack.map((item) => (
                     <span
@@ -1065,7 +1228,11 @@ export function PortfolioPage() {
                     Live
                     <ArrowUpRight size={15} />
                   </ActionLink>
-                  <ActionLink href={project.github} variant="secondary">
+                  <ActionLink
+                    href={project.github}
+                    external={project.github.startsWith("http")}
+                    variant="secondary"
+                  >
                     GitHub
                     <GitBranch size={15} />
                   </ActionLink>
@@ -1228,13 +1395,13 @@ export function PortfolioPage() {
                 </span>
                 <ArrowUpRight size={16} className="shrink-0" />
               </a>
-              <ActionLink href="#" variant="secondary">
+              <ActionLink href={githubUrl} external variant="secondary">
                 <GitBranch size={16} />
-                GitHub placeholder
+                GitHub
               </ActionLink>
-              <ActionLink href="#" variant="secondary">
+              <ActionLink href={telegramUrl} external variant="secondary">
                 <Send size={16} />
-                Telegram placeholder
+                Telegram
               </ActionLink>
             </div>
           </div>
