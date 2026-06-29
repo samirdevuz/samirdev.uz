@@ -1,18 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTheme } from "next-themes";
 import {
   ArrowUpRight,
+  AtSign,
   BookOpen,
   Check,
   Code2,
   Command,
   Copy,
+  Keyboard,
   GitBranch,
   Layers3,
   Mail,
+  MessageCircle,
   Moon,
   Send,
   Sparkles,
@@ -24,6 +28,29 @@ import type { BlogPost } from "@/data/blog";
 
 const githubUrl = "https://github.com/samirdevuz";
 const telegramUrl = "https://t.me/samirdevuz";
+const instagramUrl = "https://www.instagram.com/samirdevuz";
+const xUrl = "https://x.com/samirdevuz";
+const discordUrl = "https://discord.com/users/samirdevuz";
+const monkeytypeUrl = "https://monkeytype.com/profile/samirdevuz";
+
+const socialLinks = [
+  { label: "GitHub", handle: "@samirdevuz", href: githubUrl, icon: GitBranch },
+  { label: "Telegram", handle: "@samirdevuz", href: telegramUrl, icon: Send },
+  {
+    label: "Instagram",
+    handle: "@samirdevuz",
+    href: instagramUrl,
+    icon: AtSign,
+  },
+  { label: "X", handle: "@samirdevuz", href: xUrl, icon: AtSign },
+  { label: "Discord", handle: "@samirdevuz", href: discordUrl, icon: MessageCircle },
+  {
+    label: "Monkeytype",
+    handle: "@samirdevuz",
+    href: monkeytypeUrl,
+    icon: Keyboard,
+  },
+];
 
 const navItems = [
   { label: "Home", href: "#home", id: "home" },
@@ -44,10 +71,13 @@ function LogoMark({ className }: { className?: string }) {
       )}
       aria-hidden="true"
     >
-      <span className="absolute inset-0 bg-[linear-gradient(135deg,var(--accent-soft),transparent_58%)]" />
-      <span className="relative font-mono text-[11px] font-semibold tracking-tight text-foreground">
-        S/
-      </span>
+      <Image
+        src="/logo-premium.png"
+        alt=""
+        className="size-full object-cover"
+        width={32}
+        height={32}
+      />
     </span>
   );
 }
@@ -374,6 +404,15 @@ function CommandMenu({
       hint: "Email and social links",
       icon: Mail,
       run: () => scrollTo("contact"),
+    },
+    {
+      label: "Open Instagram",
+      hint: "@samirdevuz",
+      icon: AtSign,
+      run: () => {
+        window.open(instagramUrl, "_blank", "noreferrer");
+        onClose();
+      },
     },
   ];
 
@@ -938,95 +977,6 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
         </div>
       </section>
 
-      <SectionReveal id="featured" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Featured Work"
-            title="A real product inside a broader developer portfolio."
-            text="MilliyPrep is highlighted as a shipped project, while the site stays centered on my web, AI, product, and interface work."
-          />
-
-          <motion.div
-            className="mt-12 overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow)]"
-            initial={{ opacity: 0, y: 30, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
-              <div className="border-b border-line p-7 sm:p-10 lg:border-b-0 lg:border-r">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-background">
-                    Live project
-                  </span>
-                  <span className="rounded-full border border-line bg-panel-soft px-3 py-1 font-mono text-xs text-muted">
-                    milliyprep.xyz
-                  </span>
-                </div>
-                <h2 className="mt-7 text-4xl font-semibold tracking-tight sm:text-5xl">
-                  MilliyPrep
-                </h2>
-                <p className="mt-5 text-lg leading-8 text-muted">
-                  An EdTech platform designed to help learners prepare for
-                  Uzbekistan&apos;s Milliy Sertifikat exams across multiple
-                  subjects with a clean, focused, and modern study experience.
-                </p>
-
-                <div className="mt-7 flex flex-wrap gap-2">
-                  {["Next.js", "EdTech", "Study platform", "Uzbek learners"].map(
-                    (item) => (
-                      <span
-                        key={item}
-                        className="rounded-full border border-line bg-panel-soft px-3 py-1.5 text-sm text-muted"
-                      >
-                        {item}
-                      </span>
-                    ),
-                  )}
-                </div>
-
-                <div className="mt-8 grid gap-3">
-                  {[
-                    "Multi-subject exam preparation",
-                    "Clean learning experience",
-                    "Modern EdTech interface",
-                    "Built for Uzbek learners",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <span className="size-1.5 rounded-full bg-accent" />
-                      <span className="text-sm text-foreground">{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-9 flex flex-wrap gap-3">
-                  <ActionLink href="https://milliyprep.xyz" external>
-                    View Live
-                    <ArrowUpRight size={16} />
-                  </ActionLink>
-                  <ActionLink
-                    href="https://milliyprep.xyz"
-                    external
-                    variant="secondary"
-                  >
-                    View Project
-                    <ArrowUpRight size={16} />
-                  </ActionLink>
-                  <ActionLink href="#" variant="secondary">
-                    GitHub
-                    <GitBranch size={16} />
-                  </ActionLink>
-                </div>
-              </div>
-
-              <div className="p-5 sm:p-8 lg:p-10">
-                <MilliyPrepPreview />
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </SectionReveal>
-
       <SectionReveal id="about" className="px-5 py-24 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.78fr_1.22fr]">
           <SectionHeading
@@ -1178,6 +1128,85 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
               stay as placeholders until those projects are public.
             </p>
           </div>
+
+          <motion.div
+            className="mt-12 overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow)]"
+            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
+              <div className="border-b border-line p-7 sm:p-10 lg:border-b-0 lg:border-r">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-background">
+                    Featured project
+                  </span>
+                  <span className="rounded-full border border-line bg-panel-soft px-3 py-1 font-mono text-xs text-muted">
+                    milliyprep.xyz
+                  </span>
+                </div>
+                <h2 className="mt-7 text-4xl font-semibold tracking-tight sm:text-5xl">
+                  MilliyPrep
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-muted">
+                  An EdTech platform designed to help learners prepare for
+                  Uzbekistan&apos;s Milliy Sertifikat exams across multiple
+                  subjects with a clean, focused, and modern study experience.
+                </p>
+
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {["Next.js", "EdTech", "Study platform", "Uzbek learners"].map(
+                    (item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-line bg-panel-soft px-3 py-1.5 text-sm text-muted"
+                      >
+                        {item}
+                      </span>
+                    ),
+                  )}
+                </div>
+
+                <div className="mt-8 grid gap-3">
+                  {[
+                    "Multi-subject exam preparation",
+                    "Clean learning experience",
+                    "Modern EdTech interface",
+                    "Built for Uzbek learners",
+                  ].map((item) => (
+                    <div key={item} className="flex items-center gap-3">
+                      <span className="size-1.5 rounded-full bg-accent" />
+                      <span className="text-sm text-foreground">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-9 flex flex-wrap gap-3">
+                  <ActionLink href="https://milliyprep.xyz" external>
+                    View Live
+                    <ArrowUpRight size={16} />
+                  </ActionLink>
+                  <ActionLink
+                    href="https://milliyprep.xyz"
+                    external
+                    variant="secondary"
+                  >
+                    View Project
+                    <ArrowUpRight size={16} />
+                  </ActionLink>
+                  <ActionLink href={githubUrl} external variant="secondary">
+                    GitHub
+                    <GitBranch size={16} />
+                  </ActionLink>
+                </div>
+              </div>
+
+              <div className="p-5 sm:p-8 lg:p-10">
+                <MilliyPrepPreview />
+              </div>
+            </div>
+          </motion.div>
 
           <div className="mt-12 grid gap-4 lg:grid-cols-2">
             {projects.map((project) => (
@@ -1395,14 +1424,34 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
                 </span>
                 <ArrowUpRight size={16} className="shrink-0" />
               </a>
-              <ActionLink href={githubUrl} external variant="secondary">
-                <GitBranch size={16} />
-                GitHub
-              </ActionLink>
-              <ActionLink href={telegramUrl} external variant="secondary">
-                <Send size={16} />
-                Telegram
-              </ActionLink>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {socialLinks.map((link) => {
+                  const Icon = link.icon;
+
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-between rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <Icon size={18} className="shrink-0 text-accent" />
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-medium text-foreground">
+                            {link.label}
+                          </span>
+                          <span className="block truncate font-mono text-xs text-muted">
+                            {link.handle}
+                          </span>
+                        </span>
+                      </span>
+                      <ArrowUpRight size={16} className="shrink-0" />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

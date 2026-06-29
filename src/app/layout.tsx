@@ -17,11 +17,24 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Samir Abdumo'minov",
+  alternateName: "samirdevuz",
   url: "https://samirdev.uz",
+  image: "https://samirdev.uz/logo-premium.png",
   email: "mailto:samirabdumominov@gmail.com",
   jobTitle: "Developer",
+  sameAs: [
+    "https://github.com/samirdevuz",
+    "https://t.me/samirdevuz",
+    "https://www.instagram.com/samirdevuz",
+    "https://x.com/samirdevuz",
+    "https://discord.com/users/samirdevuz",
+    "https://monkeytype.com/profile/samirdevuz",
+  ],
   knowsAbout: [
     "Web development",
+    "Next.js",
+    "TypeScript",
+    "React",
     "AI-powered tools",
     "EdTech",
     "Automation",
@@ -32,6 +45,7 @@ const structuredData = {
     "@type": "WebSite",
     name: "Samir Abdumo'minov Portfolio",
     url: "https://samirdev.uz",
+    inLanguage: "en",
   },
 };
 
@@ -43,18 +57,22 @@ export const metadata: Metadata = {
     template: "%s | Samir Abdumo'minov",
   },
   description:
-    "Samir Abdumo'minov is a developer building modern web products, AI-powered tools, EdTech experiences, automation ideas, and useful digital products.",
+    "Portfolio of Samir Abdumo'minov (@samirdevuz), a developer building Next.js web products, AI-powered tools, EdTech experiences, automation ideas, and useful digital products.",
   keywords: [
     "Samir Abdumo'minov",
     "developer portfolio",
     "web developer",
     "Next.js developer",
     "TypeScript",
+    "React developer",
     "AI tools",
     "EdTech",
+    "MilliyPrep",
+    "Milliy Sertifikat",
     "automation",
     "frontend developer",
     "Uzbekistan developer",
+    "samirdevuz",
   ],
   authors: [{ name: "Samir Abdumo'minov" }],
   creator: "Samir Abdumo'minov",
@@ -64,9 +82,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/logo-premium.png",
   },
   robots: {
     index: true,
@@ -82,17 +100,27 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Samir Abdumo'minov | Developer Building Modern Web Products",
     description:
-      "Developer portfolio focused on web products, AI-powered tools, EdTech, automation, and useful digital products.",
+      "Developer portfolio for @samirdevuz, focused on Next.js web products, AI-powered tools, EdTech, automation, and useful digital products.",
     url: "/",
     siteName: "Samir Abdumo'minov",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/logo-premium.png",
+        width: 512,
+        height: 512,
+        alt: "Samir Abdumo'minov portfolio logo",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
+    creator: "@samirdevuz",
     title: "Samir Abdumo'minov | Developer Building Modern Web Products",
     description:
-      "Developer portfolio focused on web products, AI-powered tools, EdTech, automation, and useful digital products.",
+      "Developer portfolio for @samirdevuz, focused on web products, AI tools, EdTech, automation, and useful digital products.",
+    images: ["/logo-premium.png"],
   },
 };
 
