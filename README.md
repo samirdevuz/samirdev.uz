@@ -41,7 +41,7 @@ Blog content lives in:
 src/data/blog-posts.json
 ```
 
-The admin UI writes to that file in local development. On serverless hosting, persistent edits should move to a database or CMS such as Supabase, Neon, Sanity, or Vercel Blob because production file systems are not durable.
+The admin UI writes to that file in local development. On Vercel/serverless, it writes to `/tmp/blog-posts.json` by default to avoid read-only source files. You can override that with `BLOG_POSTS_FILE`, but durable production edits should still move to a database or CMS such as Supabase, Neon, Sanity, or Vercel Blob because serverless runtime files are not permanent.
 
 ## Scripts
 
