@@ -2,7 +2,18 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
-import { Check, Lock, LogOut, Plus, Save, Trash2 } from "lucide-react";
+import {
+  Check,
+  Download,
+  Lock,
+  LogOut,
+  Plus,
+  RefreshCcw,
+  Save,
+  SearchCheck,
+  Trash2,
+  Wrench,
+} from "lucide-react";
 import type { BlogPost } from "@/data/blog";
 
 const emptyPost: BlogPost = {
@@ -13,6 +24,14 @@ const emptyPost: BlogPost = {
   excerpt: "",
   readingTime: "2 min read",
   content: [""],
+};
+
+type AdminToolAction = "validate-blog" | "seo-check" | "content-summary";
+
+type AdminToolResult = {
+  title: string;
+  ok: boolean;
+  details: string[];
 };
 
 function slugify(value: string) {
@@ -32,6 +51,8 @@ export function AdminDashboard() {
   const [draft, setDraft] = useState<BlogPost>(emptyPost);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [toolResult, setToolResult] = useState<AdminToolResult | null>(null);
+  const [toolLoading, setToolLoading] = useState<AdminToolAction | "refresh" | "download" | "">("");
 
   const selectedPost = useMemo(
     () => posts.find((post) => post.slug === selectedSlug),
@@ -51,6 +72,60 @@ export function AdminDashboard() {
     setPosts(data.posts);
     setSelectedSlug(data.posts[0]?.slug ?? "");
     setDraft(data.posts[0] ?? emptyPost);
+  }
+
+  async function refreshPosts() {
+    setToolLoading("refresh");
+    setError("");
+
+    try {
+      await loadPosts();
+      setStatus("Posts refreshed.");
+    } catch (refreshError) {
+      setError(refreshError instanceof Error ? refreshError.message : "Could not refresh posts.");
+    } finally {
+      setToolLoading("");
+    }
+  }
+
+  async function runAdminTool(action: AdminToolAction) {
+    setToolLoading(action);
+    setError("");
+    setStatus("");
+
+    const response = await fetch("/api/admin/tools", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action }),
+    });
+    const data = (await response.json()) as {
+      result?: AdminToolResult;
+      error?: string;
+    };
+
+    setToolLoading("");
+
+    if (!response.ok || !data.result) {
+      setError(data.error ?? "Admin tool failed.");
+      return;
+    }
+
+    setToolResult(data.result);
+  }
+
+  function downloadPosts() {
+    setToolLoading("download");
+    const blob = new Blob([`${JSON.stringify(posts, null, 2)}\n`], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "blog-posts.json";
+    link.click();
+    URL.revokeObjectURL(url);
+    setToolLoading("");
+    setStatus("Posts JSON downloaded.");
   }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -404,15 +479,86 @@ export function AdminDashboard() {
             Other admin tools
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {["Blog publishing", "Project content", "SEO checks"].map((tool) => (
-              <div
-                key={tool}
-                className="rounded-xl border border-line bg-panel-soft p-4 text-sm text-muted"
-              >
-                {tool}
-              </div>
-            ))}
+            <button
+              type="button"
+              onClick={() => runAdminTool("validate-blog")}
+              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
+            >
+              <span className="flex items-center gap-2 font-medium text-foreground">
+                <Check size={16} /> Validate blog
+              </span>
+              <span className="mt-2 block text-muted">
+                Check required fields, content, and duplicate slugs.
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => runAdminTool("content-summary")}
+              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
+            >
+              <span className="flex items-center gap-2 font-medium text-foreground">
+                <Wrench size={16} /> Content summary
+              </span>
+              <span className="mt-2 block text-muted">
+                Inspect current storage, post count, and product setup.
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => runAdminTool("seo-check")}
+              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
+            >
+              <span className="flex items-center gap-2 font-medium text-foreground">
+                <SearchCheck size={16} /> SEO checks
+              </span>
+              <span className="mt-2 block text-muted">
+                Review metadata, sitemap, robots, and indexable posts.
+              </span>
+            </button>
           </div>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={refreshPosts}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+            >
+              <RefreshCcw size={15} />
+              {toolLoading === "refresh" ? "Refreshing..." : "Refresh posts"}
+            </button>
+            <button
+              type="button"
+              onClick={downloadPosts}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+            >
+              <Download size={15} />
+              Download JSON
+            </button>
+          </div>
+
+          {toolLoading &&
+          toolLoading !== "refresh" &&
+          toolLoading !== "download" ? (
+            <p className="mt-4 text-sm text-muted">Running admin tool...</p>
+          ) : null}
+
+          {toolResult ? (
+            <div className="mt-4 rounded-xl border border-line bg-background p-4 text-sm">
+              <div className="flex items-center gap-2 font-medium text-foreground">
+                {toolResult.ok ? (
+                  <Check size={16} className="text-accent" />
+                ) : (
+                  <SearchCheck size={16} className="text-red-500" />
+                )}
+                {toolResult.title}
+              </div>
+              <ul className="mt-3 grid gap-2 text-muted">
+                {toolResult.details.map((detail) => (
+                  <li key={detail}>{detail}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </section>
       </div>
     </main>

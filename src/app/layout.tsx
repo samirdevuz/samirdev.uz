@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { defaultLocale, isLocale, localeCookieName } from "@/lib/locale";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -124,14 +126,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerStore = await headers();
+  const cookieStore = await cookies();
+  const headerLocale = headerStore.get("x-samir-locale");
+  const cookieLocale = cookieStore.get(localeCookieName)?.value;
+  const locale = isLocale(headerLocale)
+    ? headerLocale
+    : isLocale(cookieLocale)
+      ? cookieLocale
+      : defaultLocale;
+
   return (
     <html
-      lang="en"
+      lang={locale}
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >

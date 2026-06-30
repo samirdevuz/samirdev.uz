@@ -25,6 +25,8 @@ import {
   X,
 } from "lucide-react";
 import type { BlogPost } from "@/data/blog";
+import type { Locale } from "@/lib/locale";
+import { localeCookieName } from "@/lib/locale";
 
 const githubUrl = "https://github.com/samirdevuz";
 const telegramUrl = "https://t.me/samirdevuz";
@@ -161,18 +163,6 @@ const skillGroups = [
 
 const projects = [
   {
-    name: "MilliyPrep",
-    status: "Live",
-    description:
-      "An EdTech product for Milliy Sertifikat preparation, focused on structured learning and a clean study experience.",
-    problem:
-      "Helps Uzbek learners prepare across subjects without a cluttered or outdated learning interface.",
-    stack: ["Next.js", "EdTech", "Product design"],
-    demo: "https://milliyprep.xyz",
-    github: githubUrl,
-    visual: "milliyprep",
-  },
-  {
     name: "AI Study Assistant",
     status: "Concept",
     description:
@@ -207,44 +197,6 @@ const projects = [
     demo: "#",
     github: "#",
     visual: "tools",
-  },
-];
-
-const principles = [
-  {
-    title: "Simple over complicated",
-    text: "Good products should feel easy to understand before they feel impressive.",
-  },
-  {
-    title: "Useful over decorative",
-    text: "Visual polish matters most when it supports clarity, speed, and real user value.",
-  },
-  {
-    title: "Fast, responsive, and polished",
-    text: "A product should work well on every screen and feel carefully built in small details.",
-  },
-];
-
-const buildLog = [
-  {
-    year: "2026",
-    status: "Building",
-    text: "Building MilliyPrep, an EdTech platform for Milliy Sertifikat preparation",
-  },
-  {
-    year: "2026",
-    status: "Designing",
-    text: "Designing and refining a personal developer portfolio",
-  },
-  {
-    year: "2025",
-    status: "Learning",
-    text: "Exploring AI tools, web development, and automation",
-  },
-  {
-    year: "2025",
-    status: "Shipping",
-    text: "Learning frontend fundamentals and product design basics",
   },
 ];
 
@@ -779,10 +731,17 @@ function ProjectMockup({ type }: { type: string }) {
     </div>
   );
 }
-export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
+export function PortfolioPage({
+  blogPosts,
+  initialLocale = "en",
+}: {
+  blogPosts: BlogPost[];
+  initialLocale?: Locale;
+}) {
   const [activeSection, setActiveSection] = useState("home");
   const [commandOpen, setCommandOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [locale, setLocale] = useState<Locale>(initialLocale);
   const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -851,6 +810,12 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
     window.setTimeout(() => setCopied(false), 1800);
   };
 
+  const updateLocale = (nextLocale: Locale) => {
+    setLocale(nextLocale);
+    document.cookie = `${localeCookieName}=${nextLocale}; max-age=31536000; path=/; samesite=lax`;
+    document.documentElement.lang = nextLocale;
+  };
+
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <CommandMenu
@@ -889,6 +854,19 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
           </div>
 
           <div className="flex items-center gap-2">
+            <label className="sr-only" htmlFor="locale-select">
+              Language
+            </label>
+            <select
+              id="locale-select"
+              value={locale}
+              onChange={(event) => updateLocale(event.target.value as Locale)}
+              className="h-10 rounded-full border border-line bg-panel/90 px-3 text-sm font-medium text-foreground shadow-sm outline-none transition-all duration-300 hover:border-accent focus:ring-2 focus:ring-accent/35"
+              aria-label="Language"
+            >
+              <option value="en">EN</option>
+              <option value="uz">UZ</option>
+            </select>
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
@@ -936,8 +914,7 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
               Samir Abdumo&apos;minov
             </p>
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Developer building modern web products, AI-powered tools, and
-              EdTech experiences.
+              Building useful web products.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-muted sm:text-lg">
               I&apos;m Samir Abdumo&apos;minov, focused on coding, AI, web
@@ -1315,63 +1292,6 @@ export function PortfolioPage({ blogPosts }: { blogPosts: BlogPost[] }) {
                   />
                 </div>
               </motion.a>
-            ))}
-          </div>
-        </div>
-      </SectionReveal>
-
-      <SectionReveal id="philosophy" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-          <SectionHeading
-            eyebrow="Development Philosophy"
-            title="The principles behind the work."
-            text="A good interface should feel considered, fast, and useful before it feels decorative."
-          />
-          <div className="grid gap-4">
-            {principles.map((principle, index) => (
-              <motion.div
-                key={principle.title}
-                className="flex gap-5 rounded-2xl border border-line bg-panel p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
-                whileHover={{ y: -4 }}
-              >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-mono text-xs text-accent">
-                  0{index + 1}
-                </span>
-                <div>
-                  <h3 className="font-semibold tracking-tight">
-                    {principle.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-muted">
-                    {principle.text}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </SectionReveal>
-
-      <SectionReveal id="build-log" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-          <SectionHeading
-            eyebrow="Build Log"
-            title="A compact changelog of what I am building and learning."
-            text="A product-style timeline for real work, direction, and progress without fake experience or inflated claims."
-          />
-          <div className="rounded-2xl border border-line bg-panel p-2 shadow-sm">
-            {buildLog.map((item) => (
-              <div
-                key={`${item.year}-${item.status}`}
-                className="grid gap-4 border-b border-line p-5 last:border-b-0 sm:grid-cols-[96px_120px_1fr] sm:items-center"
-              >
-                <span className="font-mono text-sm text-muted">
-                  {item.year}
-                </span>
-                <span className="w-fit rounded-full border border-line bg-panel-soft px-3 py-1 font-mono text-xs text-accent">
-                  {item.status}
-                </span>
-                <p className="leading-7 text-foreground">{item.text}</p>
-              </div>
             ))}
           </div>
         </div>
