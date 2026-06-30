@@ -26,11 +26,11 @@ import {
 } from "lucide-react";
 import type { BlogPost } from "@/data/blog";
 import type { Locale } from "@/lib/locale";
-import { localeCookieName } from "@/lib/locale";
+import { isLocale, localeCookieName } from "@/lib/locale";
 
 const githubUrl = "https://github.com/samirdevuz";
 const telegramUrl = "https://t.me/samirdevuz";
-const instagramUrl = "https://www.instagram.com/samirdevuz";
+const instagramUrl = "https://www.instagram.com/abdumuminov_samir";
 const xUrl = "https://x.com/samirdevuz";
 const discordUrl = "https://discord.com/users/samirdevuz";
 const monkeytypeUrl = "https://monkeytype.com/profile/samirdevuz";
@@ -40,7 +40,7 @@ const socialLinks = [
   { label: "Telegram", handle: "@samirdevuz", href: telegramUrl, icon: Send },
   {
     label: "Instagram",
-    handle: "@samirdevuz",
+    handle: "@abdumuminov_samir",
     href: instagramUrl,
     icon: AtSign,
   },
@@ -55,14 +55,173 @@ const socialLinks = [
 ];
 
 const navItems = [
-  { label: "Home", href: "#home", id: "home" },
-  { label: "About", href: "#about", id: "about" },
-  { label: "Focus", href: "#build", id: "build" },
-  { label: "Skills", href: "#skills", id: "skills" },
-  { label: "Projects", href: "#projects", id: "projects" },
-  { label: "Blog", href: "#blog", id: "blog" },
-  { label: "Contact", href: "#contact", id: "contact" },
+  { label: { en: "Home", uz: "Bosh sahifa" }, href: "#home", id: "home" },
+  { label: { en: "About", uz: "Men haqimda" }, href: "#about", id: "about" },
+  { label: { en: "Focus", uz: "Yo'nalish" }, href: "#build", id: "build" },
+  { label: { en: "Skills", uz: "Ko'nikmalar" }, href: "#skills", id: "skills" },
+  { label: { en: "Projects", uz: "Loyihalar" }, href: "#projects", id: "projects" },
+  { label: { en: "Blog", uz: "Blog" }, href: "#blog", id: "blog" },
+  { label: { en: "Contact", uz: "Aloqa" }, href: "#contact", id: "contact" },
 ];
+
+const copy = {
+  en: {
+    language: "Language",
+    menu: "Menu",
+    commandMenu: "Command menu",
+    closeCommandMenu: "Close command menu",
+    pressEsc: "Press Esc to close",
+    heroBadge: "Building across web, AI tools, and EdTech",
+    heroTitle: "Building useful web products.",
+    heroText:
+      "I'm Samir Abdumo'minov, focused on coding, AI, web development, IT, computer science, and turning useful ideas into polished digital products.",
+    viewProjects: "View Projects",
+    openCommandMenu: "Open Command Menu",
+    heroChips: ["Web products", "AI workflows", "Learning tools"],
+    aboutEyebrow: "About",
+    aboutTitle: "Building with a product mindset.",
+    aboutText:
+      "I care about useful software, clean interfaces, and learning the foundations behind good technology.",
+    aboutBody:
+      "I'm Samir Abdumo'minov, a developer interested in building clean, useful, and modern digital products. My focus is web development, AI-powered tools, EdTech, and product design. I enjoy turning ideas into polished interfaces and practical tools that people can actually use.",
+    buildEyebrow: "What I Build",
+    buildTitle: "Focused digital products, from interfaces to useful tools.",
+    buildText:
+      "The common thread is usefulness: interfaces and tools that help people move faster, learn better, or work with less friction.",
+    buildNote:
+      "I prefer small, focused product systems over pages that only look good in a screenshot.",
+    skillsEyebrow: "Skills",
+    skillsTitle: "A structured stack for building modern products.",
+    skillsText:
+      "The skill set is centered on frontend development, interface quality, practical tools, and product areas I want to keep exploring.",
+    projectsEyebrow: "Projects",
+    projectsTitle: "Project work, concepts, and experiments.",
+    projectsText:
+      "A balanced view of shipped work, concepts, portfolio systems, and small utility experiments.",
+    projectsNote:
+      "Real links are used where available. Other demo and GitHub links stay as placeholders until those projects are public.",
+    featuredProject: "Featured project",
+    milliyPrepText:
+      "An EdTech platform designed to help learners prepare for Uzbekistan's Milliy Sertifikat exams across multiple subjects with a clean, focused, and modern study experience.",
+    milliyPrepTags: ["Next.js", "EdTech", "Study platform", "Uzbek learners"],
+    milliyPrepPoints: [
+      "Multi-subject exam preparation",
+      "Clean learning experience",
+      "Modern EdTech interface",
+      "Built for Uzbek learners",
+    ],
+    viewLive: "View Live",
+    viewProject: "View Project",
+    problemSolved: "Problem solved",
+    live: "Live",
+    blogEyebrow: "Blog",
+    blogTitle: "Posts, notes, and build updates.",
+    blogText:
+      "A lightweight writing space for web development, interface thinking, AI tools, product notes, and project updates.",
+    viewAllPosts: "View all posts",
+    readPost: "Read post",
+    contactEyebrow: "Contact",
+    contactTitle: "Have an idea, project, or collaboration?",
+    contactText:
+      "Feel free to contact me. I am open to useful projects, learning opportunities, and building modern digital products.",
+    copiedEmail: "Copied email",
+    copied: "Copied",
+    copy: "Copy",
+    openEmailApp: "Open email app",
+    toggleTheme: "Toggle color theme",
+    footer: "Built with Next.js and Tailwind CSS.",
+    backToTop: "Back to top",
+    commandActions: {
+      viewProjects: ["View Projects", "Jump to project grid"],
+      openMilliyPrep: ["Open MilliyPrep", "milliyprep.xyz"],
+      copyEmail: ["Copy Email", "samirabdumominov@gmail.com"],
+      emailCopied: ["Email Copied", "samirabdumominov@gmail.com"],
+      toggleDarkMode: ["Toggle Dark Mode", "Switch site theme"],
+      viewSkills: ["View Skills", "Tech stack system"],
+      viewBlog: ["View Blog", "Posts and notes"],
+      contactMe: ["Contact Me", "Email and social links"],
+      openInstagram: ["Open Instagram", "@abdumuminov_samir"],
+    },
+  },
+  uz: {
+    language: "Til",
+    menu: "Menyu",
+    commandMenu: "Command menu",
+    closeCommandMenu: "Command menuni yopish",
+    pressEsc: "Yopish uchun Esc bosing",
+    heroBadge: "Web, AI tools va EdTech yo'nalishida quraman",
+    heroTitle: "Foydali web mahsulotlar quraman.",
+    heroText:
+      "Men Samir Abdumo'minovman. Coding, AI, web development, IT, computer science va foydali g'oyalarni puxta digital mahsulotga aylantirishga fokus qilaman.",
+    viewProjects: "Loyihalarni ko'rish",
+    openCommandMenu: "Command menuni ochish",
+    heroChips: ["Web mahsulotlar", "AI workflowlar", "Learning tools"],
+    aboutEyebrow: "Men haqimda",
+    aboutTitle: "Mahsulot fikrlashi bilan quraman.",
+    aboutText:
+      "Foydali software, toza interfeyslar va yaxshi texnologiya ortidagi asoslarni o'rganish men uchun muhim.",
+    aboutBody:
+      "Men Samir Abdumo'minovman. Toza, foydali va zamonaviy digital mahsulotlar qurishga qiziqaman. Fokusim web development, AI-powered tools, EdTech va product design. G'oyalarni odamlar ishlata oladigan puxta interfeys va amaliy toollarga aylantirishni yaxshi ko'raman.",
+    buildEyebrow: "Nimalar quraman",
+    buildTitle: "Interfeyslardan foydali toollargacha fokusli digital mahsulotlar.",
+    buildText:
+      "Umumiy yo'nalish foydalilik: odamlar tezroq harakat qilishi, yaxshiroq o'rganishi yoki kamroq chalg'ish bilan ishlashi uchun interfeys va toollar.",
+    buildNote:
+      "Faqat screenshotda chiroyli ko'rinadigan sahifalardan ko'ra kichik, fokusli product systemlarni afzal ko'raman.",
+    skillsEyebrow: "Ko'nikmalar",
+    skillsTitle: "Zamonaviy mahsulotlar uchun tartibli stack.",
+    skillsText:
+      "Ko'nikmalar frontend development, interface quality, amaliy toollar va product yo'nalishlariga qaratilgan.",
+    projectsEyebrow: "Loyihalar",
+    projectsTitle: "Loyihalar, konseptlar va tajribalar.",
+    projectsText:
+      "Chiqqan ishlar, konseptlar, portfolio tizimlari va kichik utility tajribalarining muvozanatli ko'rinishi.",
+    projectsNote:
+      "Mavjud joylarda haqiqiy linklar ishlatiladi. Boshqa demo va GitHub linklar loyiha public bo'lguncha placeholder bo'lib turadi.",
+    featuredProject: "Asosiy loyiha",
+    milliyPrepText:
+      "O'zbek o'quvchilari uchun Milliy Sertifikat imtihonlariga bir nechta fan bo'yicha toza, fokusli va zamonaviy tayyorgarlik tajribasi beradigan EdTech platforma.",
+    milliyPrepTags: ["Next.js", "EdTech", "Study platform", "O'zbek o'quvchilar"],
+    milliyPrepPoints: [
+      "Bir nechta fan bo'yicha tayyorgarlik",
+      "Toza learning experience",
+      "Zamonaviy EdTech interface",
+      "O'zbek o'quvchilar uchun",
+    ],
+    viewLive: "Live ko'rish",
+    viewProject: "Loyihani ko'rish",
+    problemSolved: "Yechilayotgan muammo",
+    live: "Live",
+    blogEyebrow: "Blog",
+    blogTitle: "Postlar, qaydlar va build yangiliklari.",
+    blogText:
+      "Web development, interface fikrlash, AI tools, product qaydlar va loyiha yangiliklari uchun yengil yozuv maydoni.",
+    viewAllPosts: "Barcha postlar",
+    readPost: "Postni o'qish",
+    contactEyebrow: "Aloqa",
+    contactTitle: "G'oya, loyiha yoki hamkorlik bormi?",
+    contactText:
+      "Bemalol yozing. Foydali loyihalar, learning tools va zamonaviy digital mahsulotlar qurishga ochiqman.",
+    copiedEmail: "Email nusxalandi",
+    copied: "Nusxalandi",
+    copy: "Nusxa olish",
+    openEmailApp: "Email ilovasini ochish",
+    toggleTheme: "Rang rejimini almashtirish",
+    footer: "Next.js va Tailwind CSS bilan qurilgan.",
+    backToTop: "Yuqoriga",
+    commandActions: {
+      viewProjects: ["Loyihalarni ko'rish", "Project gridga o'tish"],
+      openMilliyPrep: ["MilliyPrep'ni ochish", "milliyprep.xyz"],
+      copyEmail: ["Email nusxalash", "samirabdumominov@gmail.com"],
+      emailCopied: ["Email nusxalandi", "samirabdumominov@gmail.com"],
+      toggleDarkMode: ["Dark mode almashtirish", "Sayt theme'ni almashtirish"],
+      viewSkills: ["Ko'nikmalarni ko'rish", "Tech stack"],
+      viewBlog: ["Blogni ko'rish", "Postlar va qaydlar"],
+      contactMe: ["Aloqa", "Email va social linklar"],
+      openInstagram: ["Instagramni ochish", "@abdumuminov_samir"],
+    },
+  },
+} satisfies Record<Locale, Record<string, unknown>>;
 
 function LogoMark({ className }: { className?: string }) {
   return (
@@ -200,6 +359,129 @@ const projects = [
   },
 ];
 
+const localizedData = {
+  en: {
+    highlights,
+    buildAreas,
+    skillGroups,
+    projects,
+  },
+  uz: {
+    highlights: [
+      {
+        title: "Web development",
+        text: "React, Next.js, TypeScript va amaliy frontend patternlar bilan zamonaviy interfeyslar.",
+        icon: Code2,
+      },
+      {
+        title: "AI tools",
+        text: "O'rganish yoki qurishni tezlashtiradigan study assistantlar, automation g'oyalar va workflowlar.",
+        icon: Sparkles,
+      },
+      {
+        title: "Product systemlar",
+        text: "Aniqlik, struktura va real user ehtiyojlariga qaratilgan fokusli digital mahsulotlar.",
+        icon: Layers3,
+      },
+    ],
+    buildAreas: [
+      {
+        title: "Toza web interfeyslar",
+        text: "O'qilishi oson layoutlar, kuchli hierarchy, responsive detallar va bevosita his qilinadigan interactionlar.",
+        icon: Code2,
+      },
+      {
+        title: "AI-powered toollar",
+        text: "Tushuntiradigan, tartiblaydigan, summary qiladigan va murakkab ishni yengillashtiradigan toollar.",
+        icon: Sparkles,
+      },
+      {
+        title: "Product dashboardlar",
+        text: "Progressni kuzatish, workflowlarni boshqarish va keyingi actionni aniq qilish uchun sokin product yuzalari.",
+        icon: Layers3,
+      },
+      {
+        title: "Foydali web utilitylar",
+        text: "Kundalik bitta muammoni tez va ishonchli yechadigan kichik fokusli toollar.",
+        icon: TerminalSquare,
+      },
+    ],
+    skillGroups: [
+      {
+        title: "Frontend Core",
+        description:
+          "Component-driven architecture va zamonaviy web asoslari bilan tez, maintainable interfeyslar qurish.",
+        icon: Code2,
+        skills: ["React", "Next.js", "TypeScript", "JavaScript"],
+      },
+      {
+        title: "UI Engineering",
+        description:
+          "Product g'oyalarni responsive ekranlarga aylantirish: motion, accessibility basics va polish bilan.",
+        icon: Layers3,
+        skills: [
+          "Tailwind CSS",
+          "Responsive Design",
+          "Framer Motion",
+          "Accessibility basics",
+        ],
+      },
+      {
+        title: "AI Workflow",
+        description:
+          "AI-assisted workflowlardan tezroq o'rganish, prototiplash va product iteration uchun foydalanish.",
+        icon: TerminalSquare,
+        skills: ["Cursor", "AI coding tools", "Automation", "Prompt engineering"],
+      },
+      {
+        title: "Product Thinking",
+        description:
+          "Software ta'lim, automation, security va digital productlarni yaxshilashi mumkin bo'lgan yo'nalishlarni o'rganish.",
+        icon: Sparkles,
+        skills: ["EdTech", "SaaS", "Clean UX", "Practical tools"],
+      },
+    ],
+    projects: [
+      {
+        name: "AI Study Assistant",
+        status: "Konsept",
+        description:
+          "Qaydlar va mavzularni aniqroq tushuntirish, summary va study planga aylantiradigan o'quv assistant konsepti.",
+        problem:
+          "O'quvchilarga tarqoq materialdan AI yordamidagi fokusli o'rganish yo'liga o'tishga yordam beradi.",
+        stack: ["AI", "React", "Learning tools"],
+        demo: "#",
+        github: "#",
+        visual: "ai",
+      },
+      {
+        name: "Personal Portfolio",
+        status: "Shu sayt",
+        description:
+          "Ishlar, yo'nalish va texnik didni aniqroq ko'rsatish uchun minimal portfolio tizimi.",
+        problem:
+          "Oddiy resume sahifa yoki generic templatega qaraganda kuchliroq birinchi taassurot yaratadi.",
+        stack: ["Next.js", "Tailwind CSS", "Framer Motion"],
+        demo: "#",
+        github: githubUrl,
+        visual: "portfolio",
+      },
+      {
+        name: "Web Tools Collection",
+        status: "Tajribalar",
+        description:
+          "Productivity, automation va web workflowlar uchun fokusli utilitylar va tajribalar to'plami.",
+        problem:
+          "Kichik kundalik muammolarni katta app o'rniga yengil toollar bilan yechadi.",
+        stack: ["TypeScript", "Utilities", "Automation"],
+        demo: "#",
+        github: "#",
+        visual: "tools",
+      },
+    ],
+  },
+};
+
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -294,17 +576,31 @@ function ActionLink({
 function CommandMenu({
   open,
   copied,
+  locale,
   onClose,
   onCopyEmail,
   onToggleTheme,
 }: {
   open: boolean;
   copied: boolean;
+  locale: Locale;
   onClose: () => void;
   onCopyEmail: () => void;
   onToggleTheme: () => void;
 }) {
   const shouldReduceMotion = useReducedMotion();
+  const t = copy[locale];
+  const actionsCopy = t.commandActions as {
+    viewProjects: string[];
+    openMilliyPrep: string[];
+    copyEmail: string[];
+    emailCopied: string[];
+    toggleDarkMode: string[];
+    viewSkills: string[];
+    viewBlog: string[];
+    contactMe: string[];
+    openInstagram: string[];
+  };
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -313,14 +609,14 @@ function CommandMenu({
 
   const actions = [
     {
-      label: "View Projects",
-      hint: "Jump to project grid",
+      label: actionsCopy.viewProjects[0],
+      hint: actionsCopy.viewProjects[1],
       icon: Layers3,
       run: () => scrollTo("projects"),
     },
     {
-      label: "Open MilliyPrep",
-      hint: "milliyprep.xyz",
+      label: actionsCopy.openMilliyPrep[0],
+      hint: actionsCopy.openMilliyPrep[1],
       icon: ArrowUpRight,
       run: () => {
         window.open("https://milliyprep.xyz", "_blank", "noreferrer");
@@ -328,38 +624,38 @@ function CommandMenu({
       },
     },
     {
-      label: copied ? "Email Copied" : "Copy Email",
-      hint: "samirabdumominov@gmail.com",
+      label: copied ? actionsCopy.emailCopied[0] : actionsCopy.copyEmail[0],
+      hint: copied ? actionsCopy.emailCopied[1] : actionsCopy.copyEmail[1],
       icon: copied ? Check : Copy,
       run: onCopyEmail,
     },
     {
-      label: "Toggle Dark Mode",
-      hint: "Switch site theme",
+      label: actionsCopy.toggleDarkMode[0],
+      hint: actionsCopy.toggleDarkMode[1],
       icon: Moon,
       run: onToggleTheme,
     },
     {
-      label: "View Skills",
-      hint: "Tech stack system",
+      label: actionsCopy.viewSkills[0],
+      hint: actionsCopy.viewSkills[1],
       icon: Code2,
       run: () => scrollTo("skills"),
     },
     {
-      label: "View Blog",
-      hint: "Posts and notes",
+      label: actionsCopy.viewBlog[0],
+      hint: actionsCopy.viewBlog[1],
       icon: BookOpen,
       run: () => scrollTo("blog"),
     },
     {
-      label: "Contact Me",
-      hint: "Email and social links",
+      label: actionsCopy.contactMe[0],
+      hint: actionsCopy.contactMe[1],
       icon: Mail,
       run: () => scrollTo("contact"),
     },
     {
-      label: "Open Instagram",
-      hint: "@samirdevuz",
+      label: actionsCopy.openInstagram[0],
+      hint: actionsCopy.openInstagram[1],
       icon: AtSign,
       run: () => {
         window.open(instagramUrl, "_blank", "noreferrer");
@@ -383,7 +679,7 @@ function CommandMenu({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label="Command menu"
+        aria-label={t.commandMenu as string}
         className="w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow)]"
         initial={shouldReduceMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
         animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
@@ -395,13 +691,13 @@ function CommandMenu({
             <span className="flex size-8 items-center justify-center rounded-md bg-accent-soft text-accent">
               <Command size={16} />
             </span>
-            <span>Command menu</span>
+            <span>{t.commandMenu as string}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="flex size-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-panel-soft hover:text-foreground"
-            aria-label="Close command menu"
+            aria-label={t.closeCommandMenu as string}
           >
             <X size={16} />
           </button>
@@ -435,7 +731,7 @@ function CommandMenu({
         </div>
 
         <div className="border-t border-line px-4 py-3 font-mono text-xs text-muted">
-          Press Esc to close
+          {t.pressEsc as string}
         </div>
       </motion.div>
     </motion.div>
@@ -741,8 +1037,21 @@ export function PortfolioPage({
   const [activeSection, setActiveSection] = useState("home");
   const [commandOpen, setCommandOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof document === "undefined") {
+      return initialLocale;
+    }
+
+    const cookieLocale = document.cookie
+      .split("; ")
+      .find((cookie) => cookie.startsWith(`${localeCookieName}=`))
+      ?.split("=")[1];
+
+    return isLocale(cookieLocale) ? cookieLocale : initialLocale;
+  });
   const { resolvedTheme, setTheme } = useTheme();
+  const t = copy[locale];
+  const pageData = localizedData[locale];
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -810,10 +1119,13 @@ export function PortfolioPage({
     window.setTimeout(() => setCopied(false), 1800);
   };
 
+  useEffect(() => {
+    document.cookie = `${localeCookieName}=${locale}; max-age=31536000; path=/; samesite=lax`;
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   const updateLocale = (nextLocale: Locale) => {
     setLocale(nextLocale);
-    document.cookie = `${localeCookieName}=${nextLocale}; max-age=31536000; path=/; samesite=lax`;
-    document.documentElement.lang = nextLocale;
   };
 
   return (
@@ -821,6 +1133,7 @@ export function PortfolioPage({
       <CommandMenu
         open={commandOpen}
         copied={copied}
+        locale={locale}
         onClose={() => setCommandOpen(false)}
         onCopyEmail={copyEmail}
         onToggleTheme={() => setTheme(isDark ? "light" : "dark")}
@@ -848,39 +1161,48 @@ export function PortfolioPage({
                     "bg-[linear-gradient(135deg,var(--foreground),var(--accent))] text-background shadow-[0_8px_22px_rgba(20,20,20,0.16)] hover:text-background dark:bg-[linear-gradient(135deg,var(--foreground),var(--accent))] dark:text-background",
                 )}
               >
-                {item.label}
+                {item.label[locale]}
               </a>
             ))}
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="sr-only" htmlFor="locale-select">
-              Language
-            </label>
-            <select
-              id="locale-select"
-              value={locale}
-              onChange={(event) => updateLocale(event.target.value as Locale)}
-              className="h-10 rounded-full border border-line bg-panel/90 px-3 text-sm font-medium text-foreground shadow-sm outline-none transition-all duration-300 hover:border-accent focus:ring-2 focus:ring-accent/35"
-              aria-label="Language"
+            <div
+              className="grid h-10 grid-cols-2 rounded-full border border-line bg-panel/90 p-1 text-xs font-semibold shadow-sm ring-1 ring-foreground/[0.03] backdrop-blur-xl"
+              role="group"
+              aria-label={t.language as string}
             >
-              <option value="en">EN</option>
-              <option value="uz">UZ</option>
-            </select>
+              {(["en", "uz"] as const).map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => updateLocale(item)}
+                  className={cn(
+                    "min-w-9 rounded-full px-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/35",
+                    locale === item
+                      ? "bg-foreground text-background shadow-[0_8px_20px_rgba(20,20,20,0.14)]"
+                      : "text-muted hover:bg-panel-soft hover:text-foreground",
+                  )}
+                  aria-pressed={locale === item}
+                >
+                  {item.toUpperCase()}
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
               className="hidden h-10 items-center justify-center gap-2 rounded-full border border-line bg-panel/90 px-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35 md:inline-flex"
             >
               <Command size={14} />
-              <span>Menu</span>
+              <span>{t.menu as string}</span>
               <span className="font-mono text-xs text-muted">⌘K</span>
             </button>
             <button
               type="button"
               onClick={() => setTheme(isDark ? "light" : "dark")}
               className="flex size-10 items-center justify-center rounded-full border border-line bg-panel/90 text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35"
-              aria-label="Toggle color theme"
+              aria-label={t.toggleTheme as string}
             >
               <Sun size={16} className="hidden dark:block" />
               <Moon size={16} className="dark:hidden" />
@@ -908,36 +1230,34 @@ export function PortfolioPage({
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-line bg-panel/80 px-3 py-1.5 text-sm text-muted shadow-sm backdrop-blur">
               <span className="size-1.5 rounded-full bg-accent" />
-              Building across web, AI tools, and EdTech
+              {t.heroBadge as string}
             </div>
             <p className="mt-7 font-mono text-sm font-medium uppercase tracking-[0.18em] text-accent">
               Samir Abdumo&apos;minov
             </p>
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Building useful web products.
+              {t.heroTitle as string}
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-muted sm:text-lg">
-              I&apos;m Samir Abdumo&apos;minov, focused on coding, AI, web
-              development, IT, computer science, and turning useful ideas into
-              polished digital products.
+              {t.heroText as string}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ActionLink href="#projects">
-                View Projects
+                {t.viewProjects as string}
                 <ArrowUpRight size={16} />
               </ActionLink>
               <button
                 type="button"
                 onClick={() => setCommandOpen(true)}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-              >
-                Open Command Menu
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+            >
+                {t.openCommandMenu as string}
                 <Command size={16} />
               </button>
             </div>
 
             <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
-              {["Web products", "AI workflows", "Learning tools"].map((item) => (
+              {(t.heroChips as string[]).map((item) => (
                 <div
                   key={item}
                   className="rounded-lg border border-line bg-panel/72 px-4 py-3 text-sm text-muted backdrop-blur"
@@ -957,23 +1277,19 @@ export function PortfolioPage({
       <SectionReveal id="about" className="px-5 py-24 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.78fr_1.22fr]">
           <SectionHeading
-            eyebrow="About"
-            title="Building with a product mindset."
-            text="I care about useful software, clean interfaces, and learning the foundations behind good technology."
+            eyebrow={t.aboutEyebrow as string}
+            title={t.aboutTitle as string}
+            text={t.aboutText as string}
           />
           <div>
             <div className="rounded-2xl border border-line bg-panel p-6 shadow-sm sm:p-8">
               <p className="text-xl leading-9 tracking-tight text-foreground">
-                I&apos;m Samir Abdumo&apos;minov, a developer interested in
-                building clean, useful, and modern digital products. My focus is
-                web development, AI-powered tools, EdTech, and product design. I
-                enjoy turning ideas into polished interfaces and practical tools
-                that people can actually use.
+                {t.aboutBody as string}
               </p>
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-3">
-              {highlights.map((item) => {
+              {pageData.highlights.map((item) => {
                 const Icon = item.icon;
 
                 return (
@@ -1003,18 +1319,17 @@ export function PortfolioPage({
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <SectionHeading
-              eyebrow="What I Build"
-              title="Focused digital products, from interfaces to useful tools."
-              text="The common thread is usefulness: interfaces and tools that help people move faster, learn better, or work with less friction."
+              eyebrow={t.buildEyebrow as string}
+              title={t.buildTitle as string}
+              text={t.buildText as string}
             />
             <div className="max-w-sm rounded-xl border border-line bg-panel p-4 text-sm leading-6 text-muted">
-              I prefer small, focused product systems over pages that only look
-              good in a screenshot.
+              {t.buildNote as string}
             </div>
           </div>
 
           <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {buildAreas.map((item) => {
+            {pageData.buildAreas.map((item) => {
               const Icon = item.icon;
 
               return (
@@ -1048,12 +1363,12 @@ export function PortfolioPage({
       <SectionReveal id="skills" className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="Skills"
-            title="A structured stack for building modern products."
-            text="The skill set is centered on frontend development, interface quality, practical tools, and product areas I want to keep exploring."
+            eyebrow={t.skillsEyebrow as string}
+            title={t.skillsTitle as string}
+            text={t.skillsText as string}
           />
           <div className="mt-12 grid gap-4 md:grid-cols-2">
-            {skillGroups.map((group) => {
+            {pageData.skillGroups.map((group) => {
               const Icon = group.icon;
 
               return (
@@ -1096,13 +1411,12 @@ export function PortfolioPage({
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <SectionHeading
-              eyebrow="Projects"
-              title="Project work, concepts, and experiments."
-              text="A balanced view of shipped work, concepts, portfolio systems, and small utility experiments."
+              eyebrow={t.projectsEyebrow as string}
+              title={t.projectsTitle as string}
+              text={t.projectsText as string}
             />
             <p className="max-w-sm text-sm leading-6 text-muted">
-              Real links are used where available. Other demo and GitHub links
-              stay as placeholders until those projects are public.
+              {t.projectsNote as string}
             </p>
           </div>
 
@@ -1117,7 +1431,7 @@ export function PortfolioPage({
               <div className="border-b border-line p-7 sm:p-10 lg:border-b-0 lg:border-r">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-background">
-                    Featured project
+                    {t.featuredProject as string}
                   </span>
                   <span className="rounded-full border border-line bg-panel-soft px-3 py-1 font-mono text-xs text-muted">
                     milliyprep.xyz
@@ -1127,13 +1441,11 @@ export function PortfolioPage({
                   MilliyPrep
                 </h2>
                 <p className="mt-5 text-lg leading-8 text-muted">
-                  An EdTech platform designed to help learners prepare for
-                  Uzbekistan&apos;s Milliy Sertifikat exams across multiple
-                  subjects with a clean, focused, and modern study experience.
+                  {t.milliyPrepText as string}
                 </p>
 
                 <div className="mt-7 flex flex-wrap gap-2">
-                  {["Next.js", "EdTech", "Study platform", "Uzbek learners"].map(
+                  {(t.milliyPrepTags as string[]).map(
                     (item) => (
                       <span
                         key={item}
@@ -1147,10 +1459,7 @@ export function PortfolioPage({
 
                 <div className="mt-8 grid gap-3">
                   {[
-                    "Multi-subject exam preparation",
-                    "Clean learning experience",
-                    "Modern EdTech interface",
-                    "Built for Uzbek learners",
+                    ...(t.milliyPrepPoints as string[]),
                   ].map((item) => (
                     <div key={item} className="flex items-center gap-3">
                       <span className="size-1.5 rounded-full bg-accent" />
@@ -1161,7 +1470,7 @@ export function PortfolioPage({
 
                 <div className="mt-9 flex flex-wrap gap-3">
                   <ActionLink href="https://milliyprep.xyz" external>
-                    View Live
+                    {t.viewLive as string}
                     <ArrowUpRight size={16} />
                   </ActionLink>
                   <ActionLink
@@ -1169,7 +1478,7 @@ export function PortfolioPage({
                     external
                     variant="secondary"
                   >
-                    View Project
+                    {t.viewProject as string}
                     <ArrowUpRight size={16} />
                   </ActionLink>
                   <ActionLink href={githubUrl} external variant="secondary">
@@ -1186,7 +1495,7 @@ export function PortfolioPage({
           </motion.div>
 
           <div className="mt-12 grid gap-4 lg:grid-cols-2">
-            {projects.map((project) => (
+            {pageData.projects.map((project) => (
               <motion.article
                 key={project.name}
                 className="group rounded-2xl border border-line bg-panel p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
@@ -1209,7 +1518,7 @@ export function PortfolioPage({
                 </p>
                 <div className="mt-6 rounded-xl border border-line bg-panel-soft p-4">
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">
-                    Problem solved
+                    {t.problemSolved as string}
                   </p>
                   <p className="mt-2 text-sm leading-6 text-muted">
                     {project.problem}
@@ -1231,7 +1540,7 @@ export function PortfolioPage({
                     href={project.demo}
                     external={project.demo.startsWith("http")}
                   >
-                    Live
+                    {t.live as string}
                     <ArrowUpRight size={15} />
                   </ActionLink>
                   <ActionLink
@@ -1253,12 +1562,12 @@ export function PortfolioPage({
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <SectionHeading
-              eyebrow="Blog"
-              title="Posts, notes, and build updates."
-              text="A lightweight writing space for web development, interface thinking, AI tools, product notes, and project updates."
+              eyebrow={t.blogEyebrow as string}
+              title={t.blogTitle as string}
+              text={t.blogText as string}
             />
             <ActionLink href="/blog" variant="secondary">
-              View all posts
+              {t.viewAllPosts as string}
               <BookOpen size={16} />
             </ActionLink>
           </div>
@@ -1285,7 +1594,7 @@ export function PortfolioPage({
                   {post.excerpt}
                 </p>
                 <div className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors group-hover:text-accent">
-                  Read post
+                  {t.readPost as string}
                   <ArrowUpRight
                     size={15}
                     className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -1297,26 +1606,25 @@ export function PortfolioPage({
         </div>
       </SectionReveal>
 
-      <SectionReveal id="contact" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-line bg-panel p-8 shadow-[var(--shadow)] sm:p-10">
+      <SectionReveal id="contact" className="px-4 py-20 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl rounded-2xl border border-line bg-panel p-5 shadow-[var(--shadow)] sm:p-10">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
               <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent">
-                Contact
+                {t.contactEyebrow as string}
               </p>
-              <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
-                Have an idea, project, or collaboration?
+              <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight sm:text-4xl">
+                {t.contactTitle as string}
               </h2>
-              <p className="mt-4 max-w-xl leading-7 text-muted">
-                Feel free to contact me. I am open to useful projects, learning
-                opportunities, and building modern digital products.
+              <p className="mt-4 max-w-xl text-sm leading-7 text-muted sm:text-base">
+                {t.contactText as string}
               </p>
             </div>
             <div className="grid gap-3">
               <button
                 type="button"
                 onClick={copyEmail}
-                className="flex items-center justify-between rounded-xl border border-line bg-panel-soft p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                className="flex min-w-0 flex-col gap-3 rounded-xl border border-line bg-panel-soft p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 sm:flex-row sm:items-center sm:justify-between"
               >
                 <span className="flex min-w-0 items-center gap-3">
                   {copied ? (
@@ -1324,23 +1632,23 @@ export function PortfolioPage({
                   ) : (
                     <Copy size={18} className="shrink-0 text-accent" />
                   )}
-                  <span className="truncate">
+                  <span className="min-w-0 break-all text-sm sm:truncate">
                     {copied
-                      ? "Copied email"
+                      ? (t.copiedEmail as string)
                       : "samirabdumominov@gmail.com"}
                   </span>
                 </span>
-                <span className="shrink-0 text-sm text-muted">
-                  {copied ? "Copied" : "Copy"}
+                <span className="shrink-0 self-start text-sm text-muted sm:self-auto">
+                  {copied ? (t.copied as string) : (t.copy as string)}
                 </span>
               </button>
               <a
                 href="mailto:samirabdumominov@gmail.com"
-                className="flex items-center justify-between rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent"
+                className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent"
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <Mail size={18} className="shrink-0 text-accent" />
-                  <span className="truncate">Open email app</span>
+                  <span className="truncate">{t.openEmailApp as string}</span>
                 </span>
                 <ArrowUpRight size={16} className="shrink-0" />
               </a>
@@ -1354,7 +1662,7 @@ export function PortfolioPage({
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center justify-between rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                      className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
                     >
                       <span className="flex min-w-0 items-center gap-3">
                         <Icon size={18} className="shrink-0 text-accent" />
@@ -1380,13 +1688,13 @@ export function PortfolioPage({
       <footer className="border-t border-line px-5 py-8 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-muted sm:flex-row">
           <p>
-            © 2026 Samir Abdumo&apos;minov. Built with Next.js and Tailwind CSS.
+            © 2026 Samir Abdumo&apos;minov. {t.footer as string}
           </p>
           <a
             href="#home"
             className="text-foreground transition-colors hover:text-accent"
           >
-            Back to top
+            {t.backToTop as string}
           </a>
         </div>
       </footer>
