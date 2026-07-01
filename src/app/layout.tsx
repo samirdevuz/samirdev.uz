@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { defaultLocale, isLocale, localeCookieName } from "@/lib/locale";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -27,7 +16,7 @@ const structuredData = {
   sameAs: [
     "https://github.com/samirdevuz",
     "https://t.me/samirdevuz",
-    "https://www.instagram.com/samirdevuz",
+    "https://www.instagram.com/abdumuminov_samir",
     "https://x.com/samirdevuz",
     "https://discord.com/users/samirdevuz",
     "https://monkeytype.com/profile/samirdevuz",
@@ -145,7 +134,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="min-h-full bg-background text-foreground">
         <script

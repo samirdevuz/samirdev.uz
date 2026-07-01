@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -57,6 +57,7 @@ const socialLinks = [
 const navItems = [
   { label: { en: "Home", uz: "Bosh sahifa" }, href: "#home", id: "home" },
   { label: { en: "About", uz: "Men haqimda" }, href: "#about", id: "about" },
+  { label: { en: "Trust", uz: "Ishonch" }, href: "#trust", id: "trust" },
   { label: { en: "Focus", uz: "Yo'nalish" }, href: "#build", id: "build" },
   { label: { en: "Skills", uz: "Ko'nikmalar" }, href: "#skills", id: "skills" },
   { label: { en: "Projects", uz: "Loyihalar" }, href: "#projects", id: "projects" },
@@ -84,6 +85,10 @@ const copy = {
       "I care about useful software, clean interfaces, and learning the foundations behind good technology.",
     aboutBody:
       "I'm Samir Abdumo'minov, a developer interested in building clean, useful, and modern digital products. My focus is web development, AI-powered tools, EdTech, and product design. I enjoy turning ideas into polished interfaces and practical tools that people can actually use.",
+    trustEyebrow: "Trust signals",
+    trustTitle: "Clear signals for useful, reliable collaboration.",
+    trustText:
+      "A quick snapshot of what I am building, how I work, and the strengths I bring to modern product work.",
     buildEyebrow: "What I Build",
     buildTitle: "Focused digital products, from interfaces to useful tools.",
     buildText:
@@ -162,6 +167,10 @@ const copy = {
       "Foydali software, toza interfeyslar va yaxshi texnologiya ortidagi asoslarni o'rganish men uchun muhim.",
     aboutBody:
       "Men Samir Abdumo'minovman. Toza, foydali va zamonaviy digital mahsulotlar qurishga qiziqaman. Fokusim web development, AI-powered tools, EdTech va product design. G'oyalarni odamlar ishlata oladigan puxta interfeys va amaliy toollarga aylantirishni yaxshi ko'raman.",
+    trustEyebrow: "Ishonch signallari",
+    trustTitle: "Foydali va ishonchli hamkorlik uchun aniq signallar.",
+    trustText:
+      "Nima qurayotganim, qanday ishlashim va zamonaviy product ishlariga olib kiradigan kuchli tomonlarimning qisqa ko'rinishi.",
     buildEyebrow: "Nimalar quraman",
     buildTitle: "Interfeyslardan foydali toollargacha fokusli digital mahsulotlar.",
     buildText:
@@ -320,6 +329,24 @@ const skillGroups = [
   },
 ];
 
+const trustSignals = [
+  {
+    value: "EdTech",
+    label: "Active product focus",
+    detail: "Building MilliyPrep around focused exam preparation for Uzbek learners.",
+  },
+  {
+    value: "Next.js",
+    label: "Modern web stack",
+    detail: "Working with React, TypeScript, Tailwind CSS, and product-minded UI patterns.",
+  },
+  {
+    value: "Open",
+    label: "Available for collaboration",
+    detail: "Interested in useful learning tools, clean interfaces, and practical web products.",
+  },
+];
+
 const projects = [
   {
     name: "AI Study Assistant",
@@ -364,6 +391,7 @@ const localizedData = {
     highlights,
     buildAreas,
     skillGroups,
+    trustSignals,
     projects,
   },
   uz: {
@@ -439,6 +467,23 @@ const localizedData = {
           "Software ta'lim, automation, security va digital productlarni yaxshilashi mumkin bo'lgan yo'nalishlarni o'rganish.",
         icon: Sparkles,
         skills: ["EdTech", "SaaS", "Clean UX", "Practical tools"],
+      },
+    ],
+    trustSignals: [
+      {
+        value: "EdTech",
+        label: "Faol product fokusi",
+        detail: "MilliyPrep orqali o'zbek o'quvchilari uchun fokusli imtihon tayyorgarligi qurilmoqda.",
+      },
+      {
+        value: "Next.js",
+        label: "Zamonaviy web stack",
+        detail: "React, TypeScript, Tailwind CSS va product-minded UI patternlar bilan ishlash.",
+      },
+      {
+        value: "Open",
+        label: "Hamkorlikka ochiq",
+        detail: "Foydali learning toollar, toza interfeyslar va amaliy web mahsulotlarga qiziqish.",
       },
     ],
     projects: [
@@ -589,6 +634,8 @@ function CommandMenu({
   onToggleTheme: () => void;
 }) {
   const shouldReduceMotion = useReducedMotion();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const firstActionRef = useRef<HTMLButtonElement>(null);
   const t = copy[locale];
   const actionsCopy = t.commandActions as {
     viewProjects: string[];
@@ -664,6 +711,53 @@ function CommandMenu({
     },
   ];
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousActiveElement =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    firstActionRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      const focusable = Array.from(focusableElements ?? []).filter(
+        (element) => !element.hasAttribute("disabled"),
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+
+      if (!first || !last) {
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+
+      if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previousActiveElement?.focus();
+    };
+  }, [open]);
+
   if (!open) {
     return null;
   }
@@ -677,6 +771,7 @@ function CommandMenu({
       onMouseDown={onClose}
     >
       <motion.div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={t.commandMenu as string}
@@ -710,6 +805,7 @@ function CommandMenu({
             return (
               <button
                 key={action.label}
+                ref={action === actions[0] ? firstActionRef : undefined}
                 type="button"
                 onClick={action.run}
                 className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 hover:bg-panel-soft focus:bg-panel-soft focus:outline-none"
@@ -1130,6 +1226,12 @@ export function PortfolioPage({
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
+      <a
+        href="#home"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background"
+      >
+        Skip to main content
+      </a>
       <CommandMenu
         open={commandOpen}
         copied={copied}
@@ -1192,6 +1294,7 @@ export function PortfolioPage({
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
+              aria-label={t.openCommandMenu as string}
               className="hidden h-10 items-center justify-center gap-2 rounded-full border border-line bg-panel/90 px-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35 md:inline-flex"
             >
               <Command size={14} />
@@ -1249,8 +1352,9 @@ export function PortfolioPage({
               <button
                 type="button"
                 onClick={() => setCommandOpen(true)}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-            >
+                aria-label={t.openCommandMenu as string}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+              >
                 {t.openCommandMenu as string}
                 <Command size={16} />
               </button>
@@ -1311,6 +1415,35 @@ export function PortfolioPage({
                 );
               })}
             </div>
+          </div>
+        </div>
+      </SectionReveal>
+
+      <SectionReveal id="trust" className="px-5 py-24 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading
+            eyebrow={t.trustEyebrow as string}
+            title={t.trustTitle as string}
+            text={t.trustText as string}
+          />
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
+            {pageData.trustSignals.map((signal) => (
+              <motion.article
+                key={signal.label}
+                className="rounded-2xl border border-line bg-panel p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
+                whileHover={{ y: -4 }}
+              >
+                <p className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+                  {signal.value}
+                </p>
+                <h3 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
+                  {signal.label}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  {signal.detail}
+                </p>
+              </motion.article>
+            ))}
           </div>
         </div>
       </SectionReveal>
