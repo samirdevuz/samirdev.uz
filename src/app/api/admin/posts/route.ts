@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       action?: "upsert" | "delete";
       post?: unknown;
       slug?: string;
+      originalSlug?: string;
     };
     const posts = await getAllPosts();
 
@@ -74,7 +75,10 @@ export async function POST(request: NextRequest) {
     }
 
     const nextPost = validatePost(body.post);
-    const withoutExisting = posts.filter((post) => post.slug !== nextPost.slug);
+    const originalSlug = slugify(String(body.originalSlug ?? ""));
+    const withoutExisting = posts.filter(
+      (post) => post.slug !== nextPost.slug && post.slug !== originalSlug,
+    );
 
     const response = NextResponse.json({
       posts: await saveAllPosts([nextPost, ...withoutExisting]),

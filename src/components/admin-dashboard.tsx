@@ -190,7 +190,7 @@ export function AdminDashboard() {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({ action: "upsert", post }),
+      body: JSON.stringify({ action: "upsert", post, originalSlug: selectedSlug }),
     });
 
     const data = (await response.json()) as { posts?: BlogPost[]; error?: string };
