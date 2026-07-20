@@ -4,17 +4,24 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Check,
+  BarChart3,
   Download,
+  FileText,
+  LayoutDashboard,
+  Link2,
   Lock,
   LogOut,
   Plus,
   RefreshCcw,
   Save,
-  SearchCheck,
+  Server,
   Trash2,
-  Wrench,
 } from "lucide-react";
 import type { BlogPost } from "@/data/blog";
+import { AdminAnalyticsDashboard } from "@/components/admin-analytics-dashboard";
+import { AdminCampaignBuilder } from "@/components/admin-campaign-builder";
+import { AdminSiteContentEditor } from "@/components/admin-site-content-editor";
+import { AdminSystemHealth } from "@/components/admin-system-health";
 
 const emptyPost: BlogPost = {
   title: "",
@@ -26,13 +33,7 @@ const emptyPost: BlogPost = {
   content: [""],
 };
 
-type AdminToolAction = "validate-blog" | "seo-check" | "content-summary";
-
-type AdminToolResult = {
-  title: string;
-  ok: boolean;
-  details: string[];
-};
+type AdminTab = "overview" | "analytics" | "content" | "blog" | "campaigns" | "system";
 
 function slugify(value: string) {
   return value
@@ -53,8 +54,8 @@ export function AdminDashboard() {
   const [draft, setDraft] = useState<BlogPost>(emptyPost);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
-  const [toolResult, setToolResult] = useState<AdminToolResult | null>(null);
-  const [toolLoading, setToolLoading] = useState<AdminToolAction | "refresh" | "download" | "">("");
+  const [toolLoading, setToolLoading] = useState<"refresh" | "download" | "">("");
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
   const selectedPost = useMemo(
     () => posts.find((post) => post.slug === selectedSlug),
@@ -137,37 +138,6 @@ export function AdminDashboard() {
       setStatus("Posts refreshed.");
     } catch (refreshError) {
       setError(refreshError instanceof Error ? refreshError.message : "Could not refresh posts.");
-    } finally {
-      setToolLoading("");
-    }
-  }
-
-  async function runAdminTool(action: AdminToolAction) {
-    setToolLoading(action);
-    setError("");
-    setStatus("");
-
-    try {
-      const response = await fetch("/api/admin/tools", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
-      const data = (await response.json()) as {
-        result?: AdminToolResult;
-        error?: string;
-      };
-
-      if (!response.ok || !data.result) {
-        setError(data.error ?? "Admin tool failed.");
-        return;
-      }
-
-      setToolResult(data.result);
-    } catch (toolError) {
-      setError(
-        toolError instanceof Error ? toolError.message : "Admin tool failed.",
-      );
     } finally {
       setToolLoading("");
     }
@@ -404,17 +374,20 @@ export function AdminDashboard() {
               Admin
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight">
-              Content dashboard
+              Portfolio control center
             </h1>
             <p className="mt-3 max-w-2xl text-muted">
-              Add and edit durable blog posts stored in Supabase Postgres.
-              Changes are published immediately across serverless instances.
+              Monitor traffic, manage campaigns, edit site copy, publish blog posts,
+              and check system health from one place.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={startNewPost}
+              onClick={() => {
+                setActiveTab("blog");
+                startNewPost();
+              }}
               className="inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-medium text-background"
             >
               <Plus size={15} />
@@ -437,7 +410,58 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
+        <nav className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="Admin sections">
+          {([
+            ["overview", "Overview", LayoutDashboard],
+            ["analytics", "Analytics", BarChart3],
+            ["content", "Site content", FileText],
+            ["blog", "Blog", Save],
+            ["campaigns", "Campaigns", Link2],
+            ["system", "System", Server],
+          ] as const).map(([id, label, Icon]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActiveTab(id)}
+              className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors ${
+                activeTab === id
+                  ? "bg-foreground text-background"
+                  : "border border-line bg-panel text-muted hover:text-foreground"
+              }`}
+            >
+              <Icon size={15} />
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {activeTab === "overview" ? <AdminAnalyticsDashboard compact /> : null}
+        {activeTab === "analytics" ? <AdminAnalyticsDashboard /> : null}
+        {activeTab === "content" ? <AdminSiteContentEditor /> : null}
+        {activeTab === "campaigns" ? <AdminCampaignBuilder /> : null}
+        {activeTab === "system" ? <AdminSystemHealth /> : null}
+
+        {activeTab === "blog" ? (
+        <>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={refreshPosts}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+          >
+            <RefreshCcw size={15} />
+            {toolLoading === "refresh" ? "Refreshing..." : "Refresh posts"}
+          </button>
+          <button
+            type="button"
+            onClick={downloadPosts}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+          >
+            <Download size={15} />
+            Download JSON
+          </button>
+        </div>
+        <div className="mt-4 grid gap-6 lg:grid-cols-[360px_1fr]">
           <aside className="rounded-2xl border border-line bg-panel p-3 shadow-sm">
             <div className="px-3 py-2 text-sm font-medium text-muted">
               Posts
@@ -592,93 +616,8 @@ export function AdminDashboard() {
             </div>
           </form>
         </div>
-
-        <section className="mt-6 rounded-2xl border border-line bg-panel p-5 shadow-sm">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent">
-            Other admin tools
-          </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <button
-              type="button"
-              onClick={() => runAdminTool("validate-blog")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <Check size={16} /> Validate blog
-              </span>
-              <span className="mt-2 block text-muted">
-                Check required fields, content, and duplicate slugs.
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => runAdminTool("content-summary")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <Wrench size={16} /> Content summary
-              </span>
-              <span className="mt-2 block text-muted">
-                Inspect current storage, post count, and product setup.
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => runAdminTool("seo-check")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <SearchCheck size={16} /> SEO checks
-              </span>
-              <span className="mt-2 block text-muted">
-                Review metadata, sitemap, robots, and indexable posts.
-              </span>
-            </button>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={refreshPosts}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
-            >
-              <RefreshCcw size={15} />
-              {toolLoading === "refresh" ? "Refreshing..." : "Refresh posts"}
-            </button>
-            <button
-              type="button"
-              onClick={downloadPosts}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
-            >
-              <Download size={15} />
-              Download JSON
-            </button>
-          </div>
-
-          {toolLoading &&
-          toolLoading !== "refresh" &&
-          toolLoading !== "download" ? (
-            <p className="mt-4 text-sm text-muted">Running admin tool...</p>
-          ) : null}
-
-          {toolResult ? (
-            <div className="mt-4 rounded-xl border border-line bg-background p-4 text-sm">
-              <div className="flex items-center gap-2 font-medium text-foreground">
-                {toolResult.ok ? (
-                  <Check size={16} className="text-accent" />
-                ) : (
-                  <SearchCheck size={16} className="text-red-500" />
-                )}
-                {toolResult.title}
-              </div>
-              <ul className="mt-3 grid gap-2 text-muted">
-                {toolResult.details.map((detail) => (
-                  <li key={detail}>{detail}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </section>
+        </>
+        ) : null}
       </div>
     </main>
   );
