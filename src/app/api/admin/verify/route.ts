@@ -2,67 +2,106 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   clearAdminSessionResponse,
   createAdminSessionResponse,
+  isAdminAuthConfigured,
+  isAdminRequest,
   verifyAdminPassword,
 } from "@/lib/admin-auth";
+import {
+  checkAdminRateLimit,
+  clearAdminRateLimit,
+} from "@/lib/admin-rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const attempts = new Map<string, { count: number; resetAt: number }>();
-const maxAttempts = 5;
-const windowMs = 10 * 60 * 1000;
+function noStore(response: NextResponse) {
+  response.headers.set("cache-control", "no-store");
+  return response;
+}
 
-function getClientKey(request: NextRequest) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "local"
+export async function GET(request: NextRequest) {
+  return noStore(
+    NextResponse.json({
+      authenticated: isAdminAuthConfigured() && isAdminRequest(request),
+    }),
   );
 }
 
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const record = attempts.get(key);
-
-  if (!record || record.resetAt < now) {
-    attempts.set(key, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-
-  record.count += 1;
-  return record.count > maxAttempts;
-}
-
-function clearAttempts(key: string) {
-  attempts.delete(key);
-}
-
 export async function POST(request: NextRequest) {
-  const clientKey = getClientKey(request);
-
-  if (isRateLimited(clientKey)) {
-    return NextResponse.json(
-      { ok: false, message: "Too many attempts. Try again later." },
-      { status: 429, headers: { "cache-control": "no-store" } },
+  if (!isAdminAuthConfigured()) {
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Admin access is not configured." },
+        { status: 503 },
+      ),
     );
   }
 
-  const body = (await request.json().catch(() => null)) as {
-    password?: string;
-  } | null;
+  let rateLimit: Awaited<ReturnType<typeof checkAdminRateLimit>>;
 
-  if (!verifyAdminPassword(String(body?.password ?? ""))) {
-    return NextResponse.json({ ok: false }, { status: 401 });
+  try {
+    rateLimit = await checkAdminRateLimit(request);
+  } catch (error) {
+    console.error("Admin rate-limit check failed", error);
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Admin access is temporarily unavailable." },
+        { status: 503 },
+      ),
+    );
   }
 
-  clearAttempts(clientKey);
-  const response = createAdminSessionResponse();
-  response.headers.set("cache-control", "no-store");
-  return response;
+  if (rateLimit.limited) {
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Too many attempts. Try again later." },
+        { status: 429 },
+      ),
+    );
+  }
+
+  const rawBody = await request.text();
+
+  if (new TextEncoder().encode(rawBody).byteLength > 4_096) {
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Request body is too large." },
+        { status: 413 },
+      ),
+    );
+  }
+
+  const body = (() => {
+    try {
+      return JSON.parse(rawBody) as { password?: string };
+    } catch {
+      return null;
+    }
+  })();
+
+  if (!verifyAdminPassword(String(body?.password ?? ""))) {
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Invalid admin credentials." },
+        { status: 401 },
+      ),
+    );
+  }
+
+  try {
+    await clearAdminRateLimit(rateLimit.clientKey);
+    return noStore(createAdminSessionResponse());
+  } catch (error) {
+    console.error("Admin session creation failed", error);
+    return noStore(
+      NextResponse.json(
+        { ok: false, message: "Admin access is temporarily unavailable." },
+        { status: 503 },
+      ),
+    );
+  }
 }
 
 export async function DELETE() {
-  const response = clearAdminSessionResponse();
-  response.headers.set("cache-control", "no-store");
-  return response;
+  return noStore(clearAdminSessionResponse());
 }

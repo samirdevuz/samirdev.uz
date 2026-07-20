@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -45,7 +45,9 @@ function slugify(value: string) {
 
 export function AdminDashboard() {
   const [password, setPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedSlug, setSelectedSlug] = useState("");
   const [draft, setDraft] = useState<BlogPost>(emptyPost);
@@ -59,16 +61,68 @@ export function AdminDashboard() {
     [posts, selectedSlug],
   );
 
+  useEffect(() => {
+    let active = true;
+
+    async function restoreSession() {
+      try {
+        const response = await fetch("/api/admin/verify", {
+          cache: "no-store",
+        });
+        const data = (await response.json()) as { authenticated?: boolean };
+
+        if (!active || !data.authenticated) {
+          return;
+        }
+
+        const postsResponse = await fetch("/api/admin/posts", {
+          cache: "no-store",
+        });
+        const postsData = (await postsResponse.json()) as {
+          posts?: BlogPost[];
+          error?: string;
+        };
+
+        if (!postsResponse.ok || !postsData.posts) {
+          throw new Error(postsData.error ?? "Could not load posts.");
+        }
+
+        setIsAuthenticated(true);
+        setPosts(postsData.posts);
+        setSelectedSlug(postsData.posts[0]?.slug ?? "");
+        setDraft(postsData.posts[0] ?? emptyPost);
+      } catch {
+        if (active) {
+          setError("Could not restore the admin session.");
+        }
+      } finally {
+        if (active) {
+          setAuthLoading(false);
+        }
+      }
+    }
+
+    void restoreSession();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   async function loadPosts() {
     const response = await fetch("/api/admin/posts", {
       cache: "no-store",
     });
 
-    if (!response.ok) {
-      throw new Error("Could not load posts.");
+    const data = (await response.json()) as {
+      posts?: BlogPost[];
+      error?: string;
+    };
+
+    if (!response.ok || !data.posts) {
+      throw new Error(data.error ?? "Could not load posts.");
     }
 
-    const data = (await response.json()) as { posts: BlogPost[] };
     setPosts(data.posts);
     setSelectedSlug(data.posts[0]?.slug ?? "");
     setDraft(data.posts[0] ?? emptyPost);
@@ -93,24 +147,30 @@ export function AdminDashboard() {
     setError("");
     setStatus("");
 
-    const response = await fetch("/api/admin/tools", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ action }),
-    });
-    const data = (await response.json()) as {
-      result?: AdminToolResult;
-      error?: string;
-    };
+    try {
+      const response = await fetch("/api/admin/tools", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      const data = (await response.json()) as {
+        result?: AdminToolResult;
+        error?: string;
+      };
 
-    setToolLoading("");
+      if (!response.ok || !data.result) {
+        setError(data.error ?? "Admin tool failed.");
+        return;
+      }
 
-    if (!response.ok || !data.result) {
-      setError(data.error ?? "Admin tool failed.");
-      return;
+      setToolResult(data.result);
+    } catch (toolError) {
+      setError(
+        toolError instanceof Error ? toolError.message : "Admin tool failed.",
+      );
+    } finally {
+      setToolLoading("");
     }
-
-    setToolResult(data.result);
   }
 
   function downloadPosts() {
@@ -122,8 +182,10 @@ export function AdminDashboard() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "blog-posts.json";
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
     setToolLoading("");
     setStatus("Posts JSON downloaded.");
   }
@@ -132,27 +194,40 @@ export function AdminDashboard() {
     event.preventDefault();
     setError("");
     setStatus("");
+    setIsSubmitting(true);
 
-    const response = await fetch("/api/admin/verify", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const response = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = (await response.json()) as { message?: string };
 
-    if (!response.ok) {
-      setError("Wrong admin password.");
-      return;
+      if (!response.ok) {
+        setError(data.message ?? "Could not sign in.");
+        return;
+      }
+
+      setPassword("");
+      await loadPosts();
+      setIsAuthenticated(true);
+      setStatus("Admin access enabled.");
+    } catch (loginError) {
+      setError(
+        loginError instanceof Error ? loginError.message : "Could not sign in.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setPassword("");
-    setIsAuthenticated(true);
-    await loadPosts();
-    setStatus("Admin access enabled.");
   }
 
   async function logout() {
-    await fetch("/api/admin/verify", { method: "DELETE" });
-    setIsAuthenticated(false);
+    try {
+      await fetch("/api/admin/verify", { method: "DELETE" });
+    } finally {
+      setIsAuthenticated(false);
+    }
     setPosts([]);
     setSelectedSlug("");
     setDraft(emptyPost);
@@ -178,6 +253,7 @@ export function AdminDashboard() {
     event.preventDefault();
     setError("");
     setStatus("");
+    setIsSubmitting(true);
 
     const post = {
       ...draft,
@@ -185,51 +261,91 @@ export function AdminDashboard() {
       content: draft.content.map((paragraph) => paragraph.trim()).filter(Boolean),
     };
 
-    const response = await fetch("/api/admin/posts", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "upsert", post, originalSlug: selectedSlug }),
-    });
+    try {
+      const response = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "upsert",
+          post,
+          originalSlug: selectedSlug,
+        }),
+      });
 
-    const data = (await response.json()) as { posts?: BlogPost[]; error?: string };
+      const data = (await response.json()) as {
+        posts?: BlogPost[];
+        error?: string;
+      };
 
-    if (!response.ok || !data.posts) {
-      setError(data.error ?? "Could not save post.");
-      return;
+      if (!response.ok || !data.posts) {
+        setError(data.error ?? "Could not save post.");
+        return;
+      }
+
+      setPosts(data.posts);
+      setSelectedSlug(post.slug);
+      setDraft(post);
+      setStatus("Post saved to Supabase and published.");
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error ? saveError.message : "Could not save post.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setPosts(data.posts);
-    setSelectedSlug(post.slug);
-    setDraft(post);
-    setStatus("Post saved. Refresh the public blog to see the update.");
   }
 
   async function deletePost() {
-    if (!draft.slug) {
+    if (!draft.slug || !window.confirm(`Delete "${draft.title}"?`)) {
       return;
     }
 
-    const response = await fetch("/api/admin/posts", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "delete", slug: draft.slug }),
-    });
+    setIsSubmitting(true);
+    setError("");
+    setStatus("");
 
-    const data = (await response.json()) as { posts?: BlogPost[]; error?: string };
+    try {
+      const response = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ action: "delete", slug: draft.slug }),
+      });
 
-    if (!response.ok || !data.posts) {
-      setError(data.error ?? "Could not delete post.");
-      return;
+      const data = (await response.json()) as {
+        posts?: BlogPost[];
+        error?: string;
+      };
+
+      if (!response.ok || !data.posts) {
+        setError(data.error ?? "Could not delete post.");
+        return;
+      }
+
+      setPosts(data.posts);
+      setSelectedSlug(data.posts[0]?.slug ?? "");
+      setDraft(data.posts[0] ?? emptyPost);
+      setStatus("Post deleted from Supabase.");
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Could not delete post.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
+  }
 
-    setPosts(data.posts);
-    setSelectedSlug(data.posts[0]?.slug ?? "");
-    setDraft(data.posts[0] ?? emptyPost);
-    setStatus("Post deleted.");
+  if (authLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background px-5 text-foreground">
+        <p className="text-sm text-muted">Checking admin session...</p>
+      </main>
+    );
   }
 
   if (!isAuthenticated) {
@@ -260,9 +376,10 @@ export function AdminDashboard() {
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-all duration-300 hover:-translate-y-0.5"
             >
-              Enter admin
+              {isSubmitting ? "Signing in..." : "Enter admin"}
             </button>
           </form>
 
@@ -290,8 +407,8 @@ export function AdminDashboard() {
               Content dashboard
             </h1>
             <p className="mt-3 max-w-2xl text-muted">
-              Add and edit blog posts from the local JSON content file. This is
-              designed for source-controlled publishing.
+              Add and edit durable blog posts stored in Supabase Postgres.
+              Changes are published immediately across serverless instances.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -448,15 +565,17 @@ export function AdminDashboard() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Save size={15} />
-                Save post
+                {isSubmitting ? "Saving..." : "Save post"}
               </button>
               {draft.slug ? (
                 <button
                   type="button"
                   onClick={deletePost}
+                  disabled={isSubmitting}
                   className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-red-400"
                 >
                   <Trash2 size={15} />

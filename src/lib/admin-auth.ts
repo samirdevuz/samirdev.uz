@@ -6,12 +6,23 @@ const sessionMaxAgeSeconds = 60 * 60 * 6;
 
 function getSecret() {
   const password = process.env.ADMIN_PASSWORD;
+  const sessionSecret = process.env.ADMIN_SESSION_SECRET;
 
   if (!password) {
     throw new Error("ADMIN_PASSWORD is not configured.");
   }
 
-  return process.env.ADMIN_SESSION_SECRET ?? password;
+  if (process.env.NODE_ENV === "production") {
+    if (!sessionSecret || sessionSecret.length < 32) {
+      throw new Error(
+        "ADMIN_SESSION_SECRET must be configured with at least 32 characters.",
+      );
+    }
+
+    return sessionSecret;
+  }
+
+  return sessionSecret ?? password;
 }
 
 function sign(value: string) {
@@ -38,9 +49,23 @@ export function verifyAdminPassword(password: string) {
   return safeEqual(password, configuredPassword);
 }
 
+export function isAdminAuthConfigured() {
+  const password = process.env.ADMIN_PASSWORD;
+  const sessionSecret = process.env.ADMIN_SESSION_SECRET;
+
+  return Boolean(
+    password &&
+      password.length >= 16 &&
+      (process.env.NODE_ENV !== "production" ||
+        (sessionSecret && sessionSecret.length >= 32)),
+  );
+}
+
 export function createAdminSessionResponse() {
   const expiresAt = Date.now() + sessionMaxAgeSeconds * 1000;
-  const payload = Buffer.from(JSON.stringify({ expiresAt })).toString("base64url");
+  const payload = Buffer.from(
+    JSON.stringify({ version: 1, expiresAt }),
+  ).toString("base64url");
   const token = `${payload}.${sign(payload)}`;
   const response = NextResponse.json({ ok: true });
 
@@ -83,9 +108,13 @@ export function isAdminRequest(request: NextRequest) {
 
     const session = JSON.parse(
       Buffer.from(payload, "base64url").toString("utf8"),
-    ) as { expiresAt?: number };
+    ) as { version?: number; expiresAt?: number };
 
-    return typeof session.expiresAt === "number" && session.expiresAt > Date.now();
+    return (
+      session.version === 1 &&
+      typeof session.expiresAt === "number" &&
+      session.expiresAt > Date.now()
+    );
   } catch {
     return false;
   }

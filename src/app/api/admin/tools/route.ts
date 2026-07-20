@@ -1,6 +1,5 @@
-import { access } from "node:fs/promises";
 import { NextRequest, NextResponse } from "next/server";
-import { getAllPosts, getPostsStoragePath } from "@/data/blog-store";
+import { getAllPosts, getPostsStorageInfo } from "@/data/blog-store";
 import { isAdminRequest } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
@@ -10,15 +9,6 @@ type ToolAction = "validate-blog" | "seo-check" | "content-summary";
 
 function uniqueValues(values: string[]) {
   return new Set(values).size === values.length;
-}
-
-async function fileExists(path: string) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 async function runTool(action: ToolAction) {
@@ -67,14 +57,17 @@ async function runTool(action: ToolAction) {
     };
   }
 
+  const storage = getPostsStorageInfo();
+
   return {
     title: "Content summary",
-    ok: true,
+    ok: storage.readConfigured && storage.adminConfigured,
     details: [
       `Blog posts: ${posts.length}`,
       `Latest post: ${posts[0]?.title ?? "None"}`,
-      `Storage path: ${getPostsStoragePath()}`,
-      `Storage file exists: ${await fileExists(getPostsStoragePath()) ? "yes" : "using seed content"}`,
+      `Storage provider: ${storage.provider}`,
+      `Supabase public reads: ${storage.readConfigured ? "configured" : "using seed fallback"}`,
+      `Supabase admin writes: ${storage.adminConfigured ? "configured" : "not configured"}`,
       "Featured product: MilliyPrep",
       "Grid products exclude MilliyPrep to avoid duplicates.",
     ],
@@ -86,9 +79,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = (await request.json().catch(() => null)) as {
-    action?: ToolAction;
-  } | null;
+  const rawBody = await request.text();
+
+  if (new TextEncoder().encode(rawBody).byteLength > 1_024) {
+    return NextResponse.json(
+      { error: "Request body is too large." },
+      { status: 413, headers: { "cache-control": "no-store" } },
+    );
+  }
+
+  const body = (() => {
+    try {
+      return JSON.parse(rawBody) as { action?: ToolAction };
+    } catch {
+      return null;
+    }
+  })();
 
   if (
     body?.action !== "validate-blog" &&
@@ -98,7 +104,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unknown admin tool." }, { status: 400 });
   }
 
-  const response = NextResponse.json({ result: await runTool(body.action) });
-  response.headers.set("cache-control", "no-store");
-  return response;
+  try {
+    const response = NextResponse.json({ result: await runTool(body.action) });
+    response.headers.set("cache-control", "no-store");
+    return response;
+  } catch (error) {
+    console.error("Admin tool failed", error);
+    return NextResponse.json(
+      { error: "Admin tool failed." },
+      { status: 500, headers: { "cache-control": "no-store" } },
+    );
+  }
 }
