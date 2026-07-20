@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { defaultLocale, isLocale, localeCookieName } from "@/lib/locale";
 
 const structuredData = {
@@ -148,6 +149,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <AnalyticsTracker />
         </ThemeProvider>
       </body>
     </html>

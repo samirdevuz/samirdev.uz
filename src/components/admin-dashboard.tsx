@@ -1,20 +1,27 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Check,
+  BarChart3,
   Download,
+  FileText,
+  LayoutDashboard,
+  Link2,
   Lock,
   LogOut,
   Plus,
   RefreshCcw,
   Save,
-  SearchCheck,
+  Server,
   Trash2,
-  Wrench,
 } from "lucide-react";
 import type { BlogPost } from "@/data/blog";
+import { AdminAnalyticsDashboard } from "@/components/admin-analytics-dashboard";
+import { AdminCampaignBuilder } from "@/components/admin-campaign-builder";
+import { AdminSiteContentEditor } from "@/components/admin-site-content-editor";
+import { AdminSystemHealth } from "@/components/admin-system-health";
 
 const emptyPost: BlogPost = {
   title: "",
@@ -26,13 +33,7 @@ const emptyPost: BlogPost = {
   content: [""],
 };
 
-type AdminToolAction = "validate-blog" | "seo-check" | "content-summary";
-
-type AdminToolResult = {
-  title: string;
-  ok: boolean;
-  details: string[];
-};
+type AdminTab = "overview" | "analytics" | "content" | "blog" | "campaigns" | "system";
 
 function slugify(value: string) {
   return value
@@ -45,30 +46,84 @@ function slugify(value: string) {
 
 export function AdminDashboard() {
   const [password, setPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedSlug, setSelectedSlug] = useState("");
   const [draft, setDraft] = useState<BlogPost>(emptyPost);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
-  const [toolResult, setToolResult] = useState<AdminToolResult | null>(null);
-  const [toolLoading, setToolLoading] = useState<AdminToolAction | "refresh" | "download" | "">("");
+  const [toolLoading, setToolLoading] = useState<"refresh" | "download" | "">("");
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
   const selectedPost = useMemo(
     () => posts.find((post) => post.slug === selectedSlug),
     [posts, selectedSlug],
   );
 
+  useEffect(() => {
+    let active = true;
+
+    async function restoreSession() {
+      try {
+        const response = await fetch("/api/admin/verify", {
+          cache: "no-store",
+        });
+        const data = (await response.json()) as { authenticated?: boolean };
+
+        if (!active || !data.authenticated) {
+          return;
+        }
+
+        const postsResponse = await fetch("/api/admin/posts", {
+          cache: "no-store",
+        });
+        const postsData = (await postsResponse.json()) as {
+          posts?: BlogPost[];
+          error?: string;
+        };
+
+        if (!postsResponse.ok || !postsData.posts) {
+          throw new Error(postsData.error ?? "Could not load posts.");
+        }
+
+        setIsAuthenticated(true);
+        setPosts(postsData.posts);
+        setSelectedSlug(postsData.posts[0]?.slug ?? "");
+        setDraft(postsData.posts[0] ?? emptyPost);
+      } catch {
+        if (active) {
+          setError("Could not restore the admin session.");
+        }
+      } finally {
+        if (active) {
+          setAuthLoading(false);
+        }
+      }
+    }
+
+    void restoreSession();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   async function loadPosts() {
     const response = await fetch("/api/admin/posts", {
       cache: "no-store",
     });
 
-    if (!response.ok) {
-      throw new Error("Could not load posts.");
+    const data = (await response.json()) as {
+      posts?: BlogPost[];
+      error?: string;
+    };
+
+    if (!response.ok || !data.posts) {
+      throw new Error(data.error ?? "Could not load posts.");
     }
 
-    const data = (await response.json()) as { posts: BlogPost[] };
     setPosts(data.posts);
     setSelectedSlug(data.posts[0]?.slug ?? "");
     setDraft(data.posts[0] ?? emptyPost);
@@ -88,31 +143,6 @@ export function AdminDashboard() {
     }
   }
 
-  async function runAdminTool(action: AdminToolAction) {
-    setToolLoading(action);
-    setError("");
-    setStatus("");
-
-    const response = await fetch("/api/admin/tools", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ action }),
-    });
-    const data = (await response.json()) as {
-      result?: AdminToolResult;
-      error?: string;
-    };
-
-    setToolLoading("");
-
-    if (!response.ok || !data.result) {
-      setError(data.error ?? "Admin tool failed.");
-      return;
-    }
-
-    setToolResult(data.result);
-  }
-
   function downloadPosts() {
     setToolLoading("download");
     const blob = new Blob([`${JSON.stringify(posts, null, 2)}\n`], {
@@ -122,8 +152,10 @@ export function AdminDashboard() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "blog-posts.json";
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
     setToolLoading("");
     setStatus("Posts JSON downloaded.");
   }
@@ -132,27 +164,40 @@ export function AdminDashboard() {
     event.preventDefault();
     setError("");
     setStatus("");
+    setIsSubmitting(true);
 
-    const response = await fetch("/api/admin/verify", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const response = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = (await response.json()) as { message?: string };
 
-    if (!response.ok) {
-      setError("Wrong admin password.");
-      return;
+      if (!response.ok) {
+        setError(data.message ?? "Could not sign in.");
+        return;
+      }
+
+      setPassword("");
+      await loadPosts();
+      setIsAuthenticated(true);
+      setStatus("Admin access enabled.");
+    } catch (loginError) {
+      setError(
+        loginError instanceof Error ? loginError.message : "Could not sign in.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setPassword("");
-    setIsAuthenticated(true);
-    await loadPosts();
-    setStatus("Admin access enabled.");
   }
 
   async function logout() {
-    await fetch("/api/admin/verify", { method: "DELETE" });
-    setIsAuthenticated(false);
+    try {
+      await fetch("/api/admin/verify", { method: "DELETE" });
+    } finally {
+      setIsAuthenticated(false);
+    }
     setPosts([]);
     setSelectedSlug("");
     setDraft(emptyPost);
@@ -178,6 +223,7 @@ export function AdminDashboard() {
     event.preventDefault();
     setError("");
     setStatus("");
+    setIsSubmitting(true);
 
     const post = {
       ...draft,
@@ -185,51 +231,91 @@ export function AdminDashboard() {
       content: draft.content.map((paragraph) => paragraph.trim()).filter(Boolean),
     };
 
-    const response = await fetch("/api/admin/posts", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "upsert", post, originalSlug: selectedSlug }),
-    });
+    try {
+      const response = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "upsert",
+          post,
+          originalSlug: selectedSlug,
+        }),
+      });
 
-    const data = (await response.json()) as { posts?: BlogPost[]; error?: string };
+      const data = (await response.json()) as {
+        posts?: BlogPost[];
+        error?: string;
+      };
 
-    if (!response.ok || !data.posts) {
-      setError(data.error ?? "Could not save post.");
-      return;
+      if (!response.ok || !data.posts) {
+        setError(data.error ?? "Could not save post.");
+        return;
+      }
+
+      setPosts(data.posts);
+      setSelectedSlug(post.slug);
+      setDraft(post);
+      setStatus("Post saved to Supabase and published.");
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error ? saveError.message : "Could not save post.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setPosts(data.posts);
-    setSelectedSlug(post.slug);
-    setDraft(post);
-    setStatus("Post saved. Refresh the public blog to see the update.");
   }
 
   async function deletePost() {
-    if (!draft.slug) {
+    if (!draft.slug || !window.confirm(`Delete "${draft.title}"?`)) {
       return;
     }
 
-    const response = await fetch("/api/admin/posts", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "delete", slug: draft.slug }),
-    });
+    setIsSubmitting(true);
+    setError("");
+    setStatus("");
 
-    const data = (await response.json()) as { posts?: BlogPost[]; error?: string };
+    try {
+      const response = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ action: "delete", slug: draft.slug }),
+      });
 
-    if (!response.ok || !data.posts) {
-      setError(data.error ?? "Could not delete post.");
-      return;
+      const data = (await response.json()) as {
+        posts?: BlogPost[];
+        error?: string;
+      };
+
+      if (!response.ok || !data.posts) {
+        setError(data.error ?? "Could not delete post.");
+        return;
+      }
+
+      setPosts(data.posts);
+      setSelectedSlug(data.posts[0]?.slug ?? "");
+      setDraft(data.posts[0] ?? emptyPost);
+      setStatus("Post deleted from Supabase.");
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Could not delete post.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
+  }
 
-    setPosts(data.posts);
-    setSelectedSlug(data.posts[0]?.slug ?? "");
-    setDraft(data.posts[0] ?? emptyPost);
-    setStatus("Post deleted.");
+  if (authLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background px-5 text-foreground">
+        <p className="text-sm text-muted">Checking admin session...</p>
+      </main>
+    );
   }
 
   if (!isAuthenticated) {
@@ -260,9 +346,10 @@ export function AdminDashboard() {
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-all duration-300 hover:-translate-y-0.5"
             >
-              Enter admin
+              {isSubmitting ? "Signing in..." : "Enter admin"}
             </button>
           </form>
 
@@ -287,17 +374,20 @@ export function AdminDashboard() {
               Admin
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight">
-              Content dashboard
+              Portfolio control center
             </h1>
             <p className="mt-3 max-w-2xl text-muted">
-              Add and edit blog posts from the local JSON content file. This is
-              designed for source-controlled publishing.
+              Monitor traffic, manage campaigns, edit site copy, publish blog posts,
+              and check system health from one place.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={startNewPost}
+              onClick={() => {
+                setActiveTab("blog");
+                startNewPost();
+              }}
               className="inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-medium text-background"
             >
               <Plus size={15} />
@@ -320,7 +410,58 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
+        <nav className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="Admin sections">
+          {([
+            ["overview", "Overview", LayoutDashboard],
+            ["analytics", "Analytics", BarChart3],
+            ["content", "Site content", FileText],
+            ["blog", "Blog", Save],
+            ["campaigns", "Campaigns", Link2],
+            ["system", "System", Server],
+          ] as const).map(([id, label, Icon]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActiveTab(id)}
+              className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors ${
+                activeTab === id
+                  ? "bg-foreground text-background"
+                  : "border border-line bg-panel text-muted hover:text-foreground"
+              }`}
+            >
+              <Icon size={15} />
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {activeTab === "overview" ? <AdminAnalyticsDashboard compact /> : null}
+        {activeTab === "analytics" ? <AdminAnalyticsDashboard /> : null}
+        {activeTab === "content" ? <AdminSiteContentEditor /> : null}
+        {activeTab === "campaigns" ? <AdminCampaignBuilder /> : null}
+        {activeTab === "system" ? <AdminSystemHealth /> : null}
+
+        {activeTab === "blog" ? (
+        <>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={refreshPosts}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+          >
+            <RefreshCcw size={15} />
+            {toolLoading === "refresh" ? "Refreshing..." : "Refresh posts"}
+          </button>
+          <button
+            type="button"
+            onClick={downloadPosts}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
+          >
+            <Download size={15} />
+            Download JSON
+          </button>
+        </div>
+        <div className="mt-4 grid gap-6 lg:grid-cols-[360px_1fr]">
           <aside className="rounded-2xl border border-line bg-panel p-3 shadow-sm">
             <div className="px-3 py-2 text-sm font-medium text-muted">
               Posts
@@ -448,15 +589,17 @@ export function AdminDashboard() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Save size={15} />
-                Save post
+                {isSubmitting ? "Saving..." : "Save post"}
               </button>
               {draft.slug ? (
                 <button
                   type="button"
                   onClick={deletePost}
+                  disabled={isSubmitting}
                   className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-red-400"
                 >
                   <Trash2 size={15} />
@@ -473,93 +616,8 @@ export function AdminDashboard() {
             </div>
           </form>
         </div>
-
-        <section className="mt-6 rounded-2xl border border-line bg-panel p-5 shadow-sm">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent">
-            Other admin tools
-          </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <button
-              type="button"
-              onClick={() => runAdminTool("validate-blog")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <Check size={16} /> Validate blog
-              </span>
-              <span className="mt-2 block text-muted">
-                Check required fields, content, and duplicate slugs.
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => runAdminTool("content-summary")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <Wrench size={16} /> Content summary
-              </span>
-              <span className="mt-2 block text-muted">
-                Inspect current storage, post count, and product setup.
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => runAdminTool("seo-check")}
-              className="rounded-xl border border-line bg-panel-soft p-4 text-left text-sm transition-colors hover:border-accent"
-            >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <SearchCheck size={16} /> SEO checks
-              </span>
-              <span className="mt-2 block text-muted">
-                Review metadata, sitemap, robots, and indexable posts.
-              </span>
-            </button>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={refreshPosts}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
-            >
-              <RefreshCcw size={15} />
-              {toolLoading === "refresh" ? "Refreshing..." : "Refresh posts"}
-            </button>
-            <button
-              type="button"
-              onClick={downloadPosts}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel px-4 text-sm font-medium"
-            >
-              <Download size={15} />
-              Download JSON
-            </button>
-          </div>
-
-          {toolLoading &&
-          toolLoading !== "refresh" &&
-          toolLoading !== "download" ? (
-            <p className="mt-4 text-sm text-muted">Running admin tool...</p>
-          ) : null}
-
-          {toolResult ? (
-            <div className="mt-4 rounded-xl border border-line bg-background p-4 text-sm">
-              <div className="flex items-center gap-2 font-medium text-foreground">
-                {toolResult.ok ? (
-                  <Check size={16} className="text-accent" />
-                ) : (
-                  <SearchCheck size={16} className="text-red-500" />
-                )}
-                {toolResult.title}
-              </div>
-              <ul className="mt-3 grid gap-2 text-muted">
-                {toolResult.details.map((detail) => (
-                  <li key={detail}>{detail}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </section>
+        </>
+        ) : null}
       </div>
     </main>
   );

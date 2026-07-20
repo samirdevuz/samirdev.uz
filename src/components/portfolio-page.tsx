@@ -25,34 +25,12 @@ import {
   X,
 } from "lucide-react";
 import type { BlogPost } from "@/data/blog";
+import type { SiteContent } from "@/data/site-content";
 import type { Locale } from "@/lib/locale";
 import { isLocale, localeCookieName } from "@/lib/locale";
+import { trackPortfolioEvent } from "@/components/analytics-tracker";
 
 const githubUrl = "https://github.com/samirdevuz";
-const telegramUrl = "https://t.me/samirdevuz";
-const instagramUrl = "https://www.instagram.com/abdumuminov_samir";
-const xUrl = "https://x.com/samirdevuz";
-const discordUrl = "https://discord.com/users/samirdevuz";
-const monkeytypeUrl = "https://monkeytype.com/profile/samirdevuz";
-
-const socialLinks = [
-  { label: "GitHub", handle: "@samirdevuz", href: githubUrl, icon: GitBranch },
-  { label: "Telegram", handle: "@samirdevuz", href: telegramUrl, icon: Send },
-  {
-    label: "Instagram",
-    handle: "@abdumuminov_samir",
-    href: instagramUrl,
-    icon: AtSign,
-  },
-  { label: "X", handle: "@samirdevuz", href: xUrl, icon: AtSign },
-  { label: "Discord", handle: "@samirdevuz", href: discordUrl, icon: MessageCircle },
-  {
-    label: "Monkeytype",
-    handle: "@samirdevuz",
-    href: monkeytypeUrl,
-    icon: Keyboard,
-  },
-];
 
 const navItems = [
   { label: { en: "Home", uz: "Bosh sahifa" }, href: "#home", id: "home" },
@@ -527,6 +505,8 @@ const localizedData = {
   },
 };
 
+void localizedData;
+
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -585,11 +565,15 @@ function ActionLink({
   children,
   variant = "primary",
   external,
+  analyticsEvent,
+  analyticsTarget,
 }: {
   href: string;
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   external?: boolean;
+  analyticsEvent?: "project_view" | "milliyprep_click" | "blog_open";
+  analyticsTarget?: string;
 }) {
   const isPlaceholder = href === "#";
 
@@ -598,6 +582,8 @@ function ActionLink({
       href={href}
       target={external && !isPlaceholder ? "_blank" : undefined}
       rel={external && !isPlaceholder ? "noreferrer" : undefined}
+      data-analytics-event={analyticsEvent}
+      data-analytics-target={analyticsTarget}
       aria-disabled={isPlaceholder}
       onClick={(event) => {
         if (isPlaceholder) {
@@ -625,6 +611,8 @@ function CommandMenu({
   onClose,
   onCopyEmail,
   onToggleTheme,
+  milliyPrepUrl,
+  instagramUrl,
 }: {
   open: boolean;
   copied: boolean;
@@ -632,6 +620,8 @@ function CommandMenu({
   onClose: () => void;
   onCopyEmail: () => void;
   onToggleTheme: () => void;
+  milliyPrepUrl: string;
+  instagramUrl: string;
 }) {
   const shouldReduceMotion = useReducedMotion();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -666,7 +656,8 @@ function CommandMenu({
       hint: actionsCopy.openMilliyPrep[1],
       icon: ArrowUpRight,
       run: () => {
-        window.open("https://milliyprep.xyz", "_blank", "noreferrer");
+        trackPortfolioEvent("milliyprep_click", milliyPrepUrl);
+        window.open(milliyPrepUrl, "_blank", "noreferrer");
         onClose();
       },
     },
@@ -680,7 +671,10 @@ function CommandMenu({
       label: actionsCopy.toggleDarkMode[0],
       hint: actionsCopy.toggleDarkMode[1],
       icon: Moon,
-      run: onToggleTheme,
+      run: () => {
+        trackPortfolioEvent("theme_change", "command_menu");
+        onToggleTheme();
+      },
     },
     {
       label: actionsCopy.viewSkills[0],
@@ -705,6 +699,7 @@ function CommandMenu({
       hint: actionsCopy.openInstagram[1],
       icon: AtSign,
       run: () => {
+        trackPortfolioEvent("social_click", "instagram");
         window.open(instagramUrl, "_blank", "noreferrer");
         onClose();
       },
@@ -764,7 +759,7 @@ function CommandMenu({
 
   return (
     <motion.div
-      className="fixed inset-0 z-[80] flex items-start justify-center bg-foreground/18 px-4 pt-24 backdrop-blur-sm dark:bg-black/45"
+      className="fixed inset-0 z-[80] flex items-start justify-center bg-foreground/18 p-4 backdrop-blur-sm dark:bg-black/45 sm:px-6 sm:pb-6 sm:pt-24"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}
@@ -775,13 +770,13 @@ function CommandMenu({
         role="dialog"
         aria-modal="true"
         aria-label={t.commandMenu as string}
-        className="w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow)]"
+        className="flex max-h-[calc(100dvh-2rem)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow)] sm:max-h-[calc(100dvh-7.5rem)]"
         initial={shouldReduceMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
         animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
           <div className="flex items-center gap-3 text-sm text-muted">
             <span className="flex size-8 items-center justify-center rounded-md bg-accent-soft text-accent">
               <Command size={16} />
@@ -798,7 +793,7 @@ function CommandMenu({
           </button>
         </div>
 
-        <div className="p-2">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
           {actions.map((action) => {
             const Icon = action.icon;
 
@@ -826,7 +821,7 @@ function CommandMenu({
           })}
         </div>
 
-        <div className="border-t border-line px-4 py-3 font-mono text-xs text-muted">
+        <div className="shrink-0 border-t border-line px-4 py-3 font-mono text-xs text-muted">
           {t.pressEsc as string}
         </div>
       </motion.div>
@@ -1126,9 +1121,11 @@ function ProjectMockup({ type }: { type: string }) {
 export function PortfolioPage({
   blogPosts,
   initialLocale = "en",
+  siteContent,
 }: {
   blogPosts: BlogPost[];
   initialLocale?: Locale;
+  siteContent: SiteContent;
 }) {
   const [activeSection, setActiveSection] = useState("home");
   const [commandOpen, setCommandOpen] = useState(false);
@@ -1146,8 +1143,42 @@ export function PortfolioPage({
     return isLocale(cookieLocale) ? cookieLocale : initialLocale;
   });
   const { resolvedTheme, setTheme } = useTheme();
-  const t = copy[locale];
-  const pageData = localizedData[locale];
+  const editableContent = siteContent.locales[locale];
+  const t = { ...copy[locale], ...editableContent };
+  const pageData = {
+    highlights: editableContent.highlights.map((item, index) => ({
+      ...item,
+      icon: [Code2, Sparkles, Layers3][index] ?? Code2,
+    })),
+    buildAreas: editableContent.buildAreas.map((item, index) => ({
+      ...item,
+      icon: [Code2, Sparkles, Layers3, TerminalSquare][index] ?? Code2,
+    })),
+    skillGroups: editableContent.skillGroups.map((item, index) => ({
+      ...item,
+      icon: [Code2, Layers3, TerminalSquare, Sparkles][index] ?? Code2,
+    })),
+    trustSignals: editableContent.trustSignals,
+    projects: editableContent.projects,
+  };
+  const socialIconMap = {
+    github: GitBranch,
+    telegram: Send,
+    instagram: AtSign,
+    x: AtSign,
+    discord: MessageCircle,
+    monkeytype: Keyboard,
+  } as const;
+  const editableSocialLinks = siteContent.socialLinks.map((link) => ({
+    ...link,
+    icon: socialIconMap[link.id],
+  }));
+  const githubUrl =
+    siteContent.socialLinks.find((link) => link.id === "github")?.href ?? "#";
+  const instagramUrl =
+    siteContent.socialLinks.find((link) => link.id === "instagram")?.href ?? "#";
+  const email = siteContent.profile.email;
+  const milliyPrepUrl = siteContent.profile.milliyPrepUrl;
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -1206,12 +1237,13 @@ export function PortfolioPage({
   const copyEmail = async () => {
     try {
       if (navigator.clipboard) {
-        await navigator.clipboard.writeText("samirabdumominov@gmail.com");
+        await navigator.clipboard.writeText(email);
       }
     } catch {
       // Clipboard permissions vary by browser; still show feedback after a user-triggered copy attempt.
     }
     setCopied(true);
+    trackPortfolioEvent("email_copy", email);
     window.setTimeout(() => setCopied(false), 1800);
   };
 
@@ -1239,6 +1271,8 @@ export function PortfolioPage({
         onClose={() => setCommandOpen(false)}
         onCopyEmail={copyEmail}
         onToggleTheme={() => setTheme(isDark ? "light" : "dark")}
+        milliyPrepUrl={milliyPrepUrl}
+        instagramUrl={instagramUrl}
       />
 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-line/70 bg-background/86 backdrop-blur-xl">
@@ -1246,10 +1280,10 @@ export function PortfolioPage({
           <a
             href="#home"
             className="group flex min-w-0 items-center gap-3 text-sm font-semibold tracking-tight text-foreground"
-            aria-label="Samir Abdumo'minov home"
+            aria-label={`${siteContent.profile.name} home`}
           >
             <LogoMark className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_14px_34px_rgba(20,20,20,0.16)]" />
-            <span className="hidden sm:inline">Samir Abdumo&apos;minov</span>
+            <span className="hidden sm:inline">{siteContent.profile.name}</span>
           </a>
 
           <div className="hidden items-center gap-1 rounded-full border border-line/90 bg-panel/88 p-1 shadow-[0_14px_44px_rgba(20,20,20,0.08)] ring-1 ring-foreground/[0.03] backdrop-blur-xl dark:bg-panel/78 dark:shadow-[0_14px_44px_rgba(0,0,0,0.32)] lg:flex">
@@ -1279,6 +1313,8 @@ export function PortfolioPage({
                   key={item}
                   type="button"
                   onClick={() => updateLocale(item)}
+                  data-analytics-event="language_change"
+                  data-analytics-target={item}
                   className={cn(
                     "min-w-9 rounded-full px-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/35",
                     locale === item
@@ -1294,6 +1330,7 @@ export function PortfolioPage({
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
+              data-analytics-event="command_menu_open"
               aria-label={t.openCommandMenu as string}
               className="hidden h-10 items-center justify-center gap-2 rounded-full border border-line bg-panel/90 px-4 text-sm font-medium text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35 md:inline-flex"
             >
@@ -1304,6 +1341,8 @@ export function PortfolioPage({
             <button
               type="button"
               onClick={() => setTheme(isDark ? "light" : "dark")}
+              data-analytics-event="theme_change"
+              data-analytics-target={isDark ? "light" : "dark"}
               className="flex size-10 items-center justify-center rounded-full border border-line bg-panel/90 text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-panel-soft focus:outline-none focus:ring-2 focus:ring-accent/35"
               aria-label={t.toggleTheme as string}
             >
@@ -1336,7 +1375,7 @@ export function PortfolioPage({
               {t.heroBadge as string}
             </div>
             <p className="mt-7 font-mono text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              Samir Abdumo&apos;minov
+              {siteContent.profile.name}
             </p>
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               {t.heroTitle as string}
@@ -1352,6 +1391,7 @@ export function PortfolioPage({
               <button
                 type="button"
                 onClick={() => setCommandOpen(true)}
+                data-analytics-event="command_menu_open"
                 aria-label={t.openCommandMenu as string}
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel px-5 text-sm font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
               >
@@ -1567,7 +1607,7 @@ export function PortfolioPage({
                     {t.featuredProject as string}
                   </span>
                   <span className="rounded-full border border-line bg-panel-soft px-3 py-1 font-mono text-xs text-muted">
-                    milliyprep.xyz
+                    {milliyPrepUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </span>
                 </div>
                 <h2 className="mt-7 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -1602,19 +1642,32 @@ export function PortfolioPage({
                 </div>
 
                 <div className="mt-9 flex flex-wrap gap-3">
-                  <ActionLink href="https://milliyprep.xyz" external>
+                  <ActionLink
+                    href={milliyPrepUrl}
+                    external
+                    analyticsEvent="milliyprep_click"
+                    analyticsTarget={milliyPrepUrl}
+                  >
                     {t.viewLive as string}
                     <ArrowUpRight size={16} />
                   </ActionLink>
                   <ActionLink
-                    href="https://milliyprep.xyz"
+                    href={milliyPrepUrl}
                     external
                     variant="secondary"
+                    analyticsEvent="milliyprep_click"
+                    analyticsTarget={milliyPrepUrl}
                   >
                     {t.viewProject as string}
                     <ArrowUpRight size={16} />
                   </ActionLink>
-                  <ActionLink href={githubUrl} external variant="secondary">
+                  <ActionLink
+                    href={githubUrl}
+                    external
+                    variant="secondary"
+                    analyticsEvent="project_view"
+                    analyticsTarget="github"
+                  >
                     GitHub
                     <GitBranch size={16} />
                   </ActionLink>
@@ -1672,6 +1725,8 @@ export function PortfolioPage({
                   <ActionLink
                     href={project.demo}
                     external={project.demo.startsWith("http")}
+                    analyticsEvent="project_view"
+                    analyticsTarget={`${project.name}:demo`}
                   >
                     {t.live as string}
                     <ArrowUpRight size={15} />
@@ -1680,6 +1735,8 @@ export function PortfolioPage({
                     href={project.github}
                     external={project.github.startsWith("http")}
                     variant="secondary"
+                    analyticsEvent="project_view"
+                    analyticsTarget={`${project.name}:github`}
                   >
                     GitHub
                     <GitBranch size={15} />
@@ -1710,6 +1767,8 @@ export function PortfolioPage({
               <motion.a
                 key={post.slug}
                 href={`/blog/${post.slug}`}
+                data-analytics-event="blog_open"
+                data-analytics-target={post.slug}
                 className="group rounded-2xl border border-line bg-panel p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
                 whileHover={{ y: -4 }}
               >
@@ -1768,7 +1827,7 @@ export function PortfolioPage({
                   <span className="min-w-0 break-all text-sm sm:truncate">
                     {copied
                       ? (t.copiedEmail as string)
-                      : "samirabdumominov@gmail.com"}
+                      : email}
                   </span>
                 </span>
                 <span className="shrink-0 self-start text-sm text-muted sm:self-auto">
@@ -1776,7 +1835,9 @@ export function PortfolioPage({
                 </span>
               </button>
               <a
-                href="mailto:samirabdumominov@gmail.com"
+                href={`mailto:${email}`}
+                data-analytics-event="email_open"
+                data-analytics-target={email}
                 className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent"
               >
                 <span className="flex min-w-0 items-center gap-3">
@@ -1786,7 +1847,7 @@ export function PortfolioPage({
                 <ArrowUpRight size={16} className="shrink-0" />
               </a>
               <div className="grid gap-3 sm:grid-cols-2">
-                {socialLinks.map((link) => {
+                {editableSocialLinks.map((link) => {
                   const Icon = link.icon;
 
                   return (
@@ -1795,6 +1856,8 @@ export function PortfolioPage({
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
+                      data-analytics-event="social_click"
+                      data-analytics-target={link.id}
                       className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
                     >
                       <span className="flex min-w-0 items-center gap-3">
@@ -1821,7 +1884,7 @@ export function PortfolioPage({
       <footer className="border-t border-line px-5 py-8 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-muted sm:flex-row">
           <p>
-            © 2026 Samir Abdumo&apos;minov. {t.footer as string}
+            © 2026 {siteContent.profile.name}. {t.footer as string}
           </p>
           <a
             href="#home"
