@@ -19,6 +19,7 @@ import {
   MessageCircle,
   Moon,
   Send,
+  Server,
   Sparkles,
   Sun,
   TerminalSquare,
@@ -57,8 +58,6 @@ const socialLinks = [
 const navItems = [
   { label: { en: "Home", uz: "Bosh sahifa" }, href: "#home", id: "home" },
   { label: { en: "About", uz: "Men haqimda" }, href: "#about", id: "about" },
-  { label: { en: "Trust", uz: "Ishonch" }, href: "#trust", id: "trust" },
-  { label: { en: "Focus", uz: "Yo'nalish" }, href: "#build", id: "build" },
   { label: { en: "Skills", uz: "Ko'nikmalar" }, href: "#skills", id: "skills" },
   { label: { en: "Projects", uz: "Loyihalar" }, href: "#projects", id: "projects" },
   { label: { en: "Blog", uz: "Blog" }, href: "#blog", id: "blog" },
@@ -85,16 +84,6 @@ const copy = {
       "I care about useful software, clean interfaces, and learning the foundations behind good technology.",
     aboutBody:
       "I'm Samir Abdumo'minov, a developer interested in building clean, useful, and modern digital products. My focus is web development, AI-powered tools, EdTech, and product design. I enjoy turning ideas into polished interfaces and practical tools that people can actually use.",
-    trustEyebrow: "Trust signals",
-    trustTitle: "Clear signals for useful, reliable collaboration.",
-    trustText:
-      "A quick snapshot of what I am building, how I work, and the strengths I bring to modern product work.",
-    buildEyebrow: "What I Build",
-    buildTitle: "Focused digital products, from interfaces to useful tools.",
-    buildText:
-      "The common thread is usefulness: interfaces and tools that help people move faster, learn better, or work with less friction.",
-    buildNote:
-      "I prefer small, focused product systems over pages that only look good in a screenshot.",
     skillsEyebrow: "Skills",
     skillsTitle: "A structured stack for building modern products.",
     skillsText:
@@ -115,8 +104,6 @@ const copy = {
       "Modern EdTech interface",
       "Built for Uzbek learners",
     ],
-    viewLive: "View Live",
-    viewProject: "View Project",
     problemSolved: "Problem solved",
     live: "Live",
     blogEyebrow: "Blog",
@@ -167,16 +154,6 @@ const copy = {
       "Foydali software, toza interfeyslar va yaxshi texnologiya ortidagi asoslarni o'rganish men uchun muhim.",
     aboutBody:
       "Men Samir Abdumo'minovman. Toza, foydali va zamonaviy digital mahsulotlar qurishga qiziqaman. Fokusim web development, AI-powered tools, EdTech va product design. G'oyalarni odamlar ishlata oladigan puxta interfeys va amaliy toollarga aylantirishni yaxshi ko'raman.",
-    trustEyebrow: "Ishonch signallari",
-    trustTitle: "Foydali va ishonchli hamkorlik uchun aniq signallar.",
-    trustText:
-      "Nima qurayotganim, qanday ishlashim va zamonaviy product ishlariga olib kiradigan kuchli tomonlarimning qisqa ko'rinishi.",
-    buildEyebrow: "Nimalar quraman",
-    buildTitle: "Interfeyslardan foydali toollargacha fokusli digital mahsulotlar.",
-    buildText:
-      "Umumiy yo'nalish foydalilik: odamlar tezroq harakat qilishi, yaxshiroq o'rganishi yoki kamroq chalg'ish bilan ishlashi uchun interfeys va toollar.",
-    buildNote:
-      "Faqat screenshotda chiroyli ko'rinadigan sahifalardan ko'ra kichik, fokusli product systemlarni afzal ko'raman.",
     skillsEyebrow: "Ko'nikmalar",
     skillsTitle: "Zamonaviy mahsulotlar uchun tartibli stack.",
     skillsText:
@@ -197,8 +174,6 @@ const copy = {
       "Zamonaviy EdTech interface",
       "O'zbek o'quvchilar uchun",
     ],
-    viewLive: "Live ko'rish",
-    viewProject: "Loyihani ko'rish",
     problemSolved: "Yechilayotgan muammo",
     live: "Live",
     blogEyebrow: "Blog",
@@ -270,29 +245,6 @@ const highlights = [
   },
 ];
 
-const buildAreas = [
-  {
-    title: "Clean web interfaces",
-    text: "Readable layouts, strong hierarchy, responsive details, and interactions that feel direct.",
-    icon: Code2,
-  },
-  {
-    title: "AI-powered tools",
-    text: "Tools that explain, organize, summarize, automate, and help people move through complex work.",
-    icon: Sparkles,
-  },
-  {
-    title: "Product dashboards",
-    text: "Calm product surfaces for tracking progress, managing workflows, and making next actions obvious.",
-    icon: Layers3,
-  },
-  {
-    title: "Useful web utilities",
-    text: "Small focused tools that solve one everyday problem quickly and reliably.",
-    icon: TerminalSquare,
-  },
-];
-
 const skillGroups = [
   {
     title: "Frontend Core",
@@ -318,7 +270,14 @@ const skillGroups = [
     description:
       "Using AI-assisted workflows to learn faster, prototype ideas, and improve product iteration.",
     icon: TerminalSquare,
-    skills: ["Cursor", "AI coding tools", "Automation", "Prompt engineering"],
+    skills: [
+      "ChatGPT Plus",
+      "OpenAI Codex CLI",
+      "GPT-4o",
+      "AI coding tools",
+      "Automation",
+      "Prompt engineering",
+    ],
   },
   {
     title: "Product Thinking",
@@ -327,39 +286,22 @@ const skillGroups = [
     icon: Sparkles,
     skills: ["EdTech", "SaaS", "Clean UX", "Practical tools"],
   },
-];
-
-const trustSignals = [
   {
-    value: "EdTech",
-    label: "Active product focus",
-    detail: "Building MilliyPrep around focused exam preparation for Uzbek learners.",
-  },
-  {
-    value: "Next.js",
-    label: "Modern web stack",
-    detail: "Working with React, TypeScript, Tailwind CSS, and product-minded UI patterns.",
-  },
-  {
-    value: "Open",
-    label: "Available for collaboration",
-    detail: "Interested in useful learning tools, clean interfaces, and practical web products.",
+    title: "Backend & Integrations",
+    description:
+      "Building backend systems and local payment and SMS integrations for the Uzbekistan and CIS markets.",
+    icon: Server,
+    skills: [
+      "Next.js (App Router)",
+      "Supabase",
+      "Click",
+      "Payme",
+      "Eskiz.uz",
+    ],
   },
 ];
 
 const projects = [
-  {
-    name: "AI Study Assistant",
-    status: "Concept",
-    description:
-      "A concept learning assistant that turns notes and topics into clearer explanations, summaries, and study plans.",
-    problem:
-      "Helps learners move from scattered material to a focused learning path with AI support.",
-    stack: ["AI", "React", "Learning tools"],
-    demo: "#",
-    github: "#",
-    visual: "ai",
-  },
   {
     name: "Personal Portfolio",
     status: "This site",
@@ -369,29 +311,15 @@ const projects = [
       "Creates a stronger first impression than a plain resume-style page or generic template.",
     stack: ["Next.js", "Tailwind CSS", "Framer Motion"],
     demo: "#",
-    github: githubUrl,
+    github: "https://github.com/samirdevuz/samirdev.uz",
     visual: "portfolio",
-  },
-  {
-    name: "Web Tools Collection",
-    status: "Experiments",
-    description:
-      "A collection of focused utilities and experiments for productivity, automation, and web workflows.",
-    problem:
-      "Solves small everyday problems with lightweight tools instead of oversized apps.",
-    stack: ["TypeScript", "Utilities", "Automation"],
-    demo: "#",
-    github: "#",
-    visual: "tools",
   },
 ];
 
 const localizedData = {
   en: {
     highlights,
-    buildAreas,
     skillGroups,
-    trustSignals,
     projects,
   },
   uz: {
@@ -410,28 +338,6 @@ const localizedData = {
         title: "Product systemlar",
         text: "Aniqlik, struktura va real user ehtiyojlariga qaratilgan fokusli digital mahsulotlar.",
         icon: Layers3,
-      },
-    ],
-    buildAreas: [
-      {
-        title: "Toza web interfeyslar",
-        text: "O'qilishi oson layoutlar, kuchli hierarchy, responsive detallar va bevosita his qilinadigan interactionlar.",
-        icon: Code2,
-      },
-      {
-        title: "AI-powered toollar",
-        text: "Tushuntiradigan, tartiblaydigan, summary qiladigan va murakkab ishni yengillashtiradigan toollar.",
-        icon: Sparkles,
-      },
-      {
-        title: "Product dashboardlar",
-        text: "Progressni kuzatish, workflowlarni boshqarish va keyingi actionni aniq qilish uchun sokin product yuzalari.",
-        icon: Layers3,
-      },
-      {
-        title: "Foydali web utilitylar",
-        text: "Kundalik bitta muammoni tez va ishonchli yechadigan kichik fokusli toollar.",
-        icon: TerminalSquare,
       },
     ],
     skillGroups: [
@@ -459,7 +365,14 @@ const localizedData = {
         description:
           "AI-assisted workflowlardan tezroq o'rganish, prototiplash va product iteration uchun foydalanish.",
         icon: TerminalSquare,
-        skills: ["Cursor", "AI coding tools", "Automation", "Prompt engineering"],
+        skills: [
+          "ChatGPT Plus",
+          "OpenAI Codex CLI",
+          "GPT-4o",
+          "AI coding tools",
+          "Automation",
+          "Prompt engineering",
+        ],
       },
       {
         title: "Product Thinking",
@@ -468,37 +381,21 @@ const localizedData = {
         icon: Sparkles,
         skills: ["EdTech", "SaaS", "Clean UX", "Practical tools"],
       },
-    ],
-    trustSignals: [
       {
-        value: "EdTech",
-        label: "Faol product fokusi",
-        detail: "MilliyPrep orqali o'zbek o'quvchilari uchun fokusli imtihon tayyorgarligi qurilmoqda.",
-      },
-      {
-        value: "Next.js",
-        label: "Zamonaviy web stack",
-        detail: "React, TypeScript, Tailwind CSS va product-minded UI patternlar bilan ishlash.",
-      },
-      {
-        value: "Open",
-        label: "Hamkorlikka ochiq",
-        detail: "Foydali learning toollar, toza interfeyslar va amaliy web mahsulotlarga qiziqish.",
+        title: "Backend & Integrations",
+        description:
+          "O'zbekiston va MDH bozori uchun backend tizimlar hamda mahalliy to'lov va SMS integratsiyalarini qurish.",
+        icon: Server,
+        skills: [
+          "Next.js (App Router)",
+          "Supabase",
+          "Click",
+          "Payme",
+          "Eskiz.uz",
+        ],
       },
     ],
     projects: [
-      {
-        name: "AI Study Assistant",
-        status: "Konsept",
-        description:
-          "Qaydlar va mavzularni aniqroq tushuntirish, summary va study planga aylantiradigan o'quv assistant konsepti.",
-        problem:
-          "O'quvchilarga tarqoq materialdan AI yordamidagi fokusli o'rganish yo'liga o'tishga yordam beradi.",
-        stack: ["AI", "React", "Learning tools"],
-        demo: "#",
-        github: "#",
-        visual: "ai",
-      },
       {
         name: "Personal Portfolio",
         status: "Shu sayt",
@@ -508,20 +405,8 @@ const localizedData = {
           "Oddiy resume sahifa yoki generic templatega qaraganda kuchliroq birinchi taassurot yaratadi.",
         stack: ["Next.js", "Tailwind CSS", "Framer Motion"],
         demo: "#",
-        github: githubUrl,
+        github: "https://github.com/samirdevuz/samirdev.uz",
         visual: "portfolio",
-      },
-      {
-        name: "Web Tools Collection",
-        status: "Tajribalar",
-        description:
-          "Productivity, automation va web workflowlar uchun fokusli utilitylar va tajribalar to'plami.",
-        problem:
-          "Kichik kundalik muammolarni katta app o'rniga yengil toollar bilan yechadi.",
-        stack: ["TypeScript", "Utilities", "Automation"],
-        demo: "#",
-        github: "#",
-        visual: "tools",
       },
     ],
   },
@@ -1070,59 +955,37 @@ function ProjectMockup({ type }: { type: string }) {
     );
   }
 
-  if (type === "portfolio") {
-    return (
-      <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
-        <div className="rounded-lg border border-line bg-background p-4">
-          <div className="flex items-center justify-between border-b border-line pb-3">
-            <span className="font-mono text-xs text-accent">samir.dev</span>
-            <div className="flex gap-1">
-              <span className="h-1.5 w-8 rounded-full bg-accent" />
-              <span className="h-1.5 w-8 rounded-full bg-line" />
-              <span className="h-1.5 w-8 rounded-full bg-line" />
-            </div>
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
-            <div>
-              <div className="h-3 w-2/3 rounded bg-foreground/80" />
-              <div className="mt-3 space-y-2">
-                <div className="h-2 rounded bg-line" />
-                <div className="h-2 w-4/5 rounded bg-line" />
-                <div className="h-2 w-3/5 rounded bg-line" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="aspect-square rounded-md border border-line bg-panel" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
       <div className="rounded-lg border border-line bg-background p-4">
-        <div className="flex items-center gap-2 font-mono text-xs text-accent">
-          <TerminalSquare size={14} />
-          <span>{type === "ai" ? "study-assistant.ts" : "tools-lab.ts"}</span>
+        <div className="flex items-center justify-between border-b border-line pb-3">
+          <span className="font-mono text-xs text-accent">samir.dev</span>
+          <div className="flex gap-1">
+            <span className="h-1.5 w-8 rounded-full bg-accent" />
+            <span className="h-1.5 w-8 rounded-full bg-line" />
+            <span className="h-1.5 w-8 rounded-full bg-line" />
+          </div>
         </div>
-        <div className="mt-4 space-y-2 font-mono text-xs text-muted">
-          {(type === "ai"
-            ? ["summarize(notes)", "buildStudyPlan(topic)", "explainClearly()"]
-            : ["formatText()", "generateSlug()", "cleanWorkflow()"]
-          ).map((line) => (
-            <div key={line} className="rounded-md border border-line bg-panel px-3 py-2">
-              <span className="text-accent">const</span> {line}
+        <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
+          <div>
+            <div className="h-3 w-2/3 rounded bg-foreground/80" />
+            <div className="mt-3 space-y-2">
+              <div className="h-2 rounded bg-line" />
+              <div className="h-2 w-4/5 rounded bg-line" />
+              <div className="h-2 w-3/5 rounded bg-line" />
             </div>
-          ))}
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {[1, 2, 3, 4].map((item) => (
+              <div key={item} className="aspect-square rounded-md border border-line bg-panel" />
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 export function PortfolioPage({
   blogPosts,
   initialLocale = "en",
@@ -1419,80 +1282,6 @@ export function PortfolioPage({
         </div>
       </SectionReveal>
 
-      <SectionReveal id="trust" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow={t.trustEyebrow as string}
-            title={t.trustTitle as string}
-            text={t.trustText as string}
-          />
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {pageData.trustSignals.map((signal) => (
-              <motion.article
-                key={signal.label}
-                className="rounded-2xl border border-line bg-panel p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
-                whileHover={{ y: -4 }}
-              >
-                <p className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-                  {signal.value}
-                </p>
-                <h3 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
-                  {signal.label}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  {signal.detail}
-                </p>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </SectionReveal>
-
-      <SectionReveal id="build" className="px-5 py-24 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <SectionHeading
-              eyebrow={t.buildEyebrow as string}
-              title={t.buildTitle as string}
-              text={t.buildText as string}
-            />
-            <div className="max-w-sm rounded-xl border border-line bg-panel p-4 text-sm leading-6 text-muted">
-              {t.buildNote as string}
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {pageData.buildAreas.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <motion.article
-                  key={item.title}
-                  className="group min-h-56 rounded-2xl border border-line bg-panel p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow)]"
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-11 items-center justify-center rounded-lg bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-105">
-                      <Icon size={19} />
-                    </span>
-                    <ArrowUpRight
-                      size={17}
-                      className="text-muted opacity-50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent group-hover:opacity-100"
-                    />
-                  </div>
-                  <h3 className="mt-8 text-lg font-semibold tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-muted">
-                    {item.text}
-                  </p>
-                </motion.article>
-              );
-            })}
-          </div>
-        </div>
-      </SectionReveal>
-
       <SectionReveal id="skills" className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
@@ -1603,20 +1392,8 @@ export function PortfolioPage({
 
                 <div className="mt-9 flex flex-wrap gap-3">
                   <ActionLink href="https://milliyprep.xyz" external>
-                    {t.viewLive as string}
+                    Live
                     <ArrowUpRight size={16} />
-                  </ActionLink>
-                  <ActionLink
-                    href="https://milliyprep.xyz"
-                    external
-                    variant="secondary"
-                  >
-                    {t.viewProject as string}
-                    <ArrowUpRight size={16} />
-                  </ActionLink>
-                  <ActionLink href={githubUrl} external variant="secondary">
-                    GitHub
-                    <GitBranch size={16} />
                   </ActionLink>
                 </div>
               </div>
@@ -1669,13 +1446,20 @@ export function PortfolioPage({
                   ))}
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <ActionLink
-                    href={project.demo}
-                    external={project.demo.startsWith("http")}
-                  >
-                    {t.live as string}
-                    <ArrowUpRight size={15} />
-                  </ActionLink>
+                  {project.name === "Personal Portfolio" ? (
+                    <span className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-panel-soft px-5 text-sm font-medium text-muted">
+                      <span className="size-2 rounded-full bg-accent" />
+                      {locale === "uz" ? "Siz shu yerdasiz" : "You are here"}
+                    </span>
+                  ) : (
+                    <ActionLink
+                      href={project.demo}
+                      external={project.demo.startsWith("http")}
+                    >
+                      {t.live as string}
+                      <ArrowUpRight size={15} />
+                    </ActionLink>
+                  )}
                   <ActionLink
                     href={project.github}
                     external={project.github.startsWith("http")}
@@ -1741,7 +1525,7 @@ export function PortfolioPage({
 
       <SectionReveal id="contact" className="px-4 py-20 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl rounded-2xl border border-line bg-panel p-5 shadow-[var(--shadow)] sm:p-10">
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div>
               <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent">
                 {t.contactEyebrow as string}
@@ -1752,6 +1536,30 @@ export function PortfolioPage({
               <p className="mt-4 max-w-xl text-sm leading-7 text-muted sm:text-base">
                 {t.contactText as string}
               </p>
+
+              <div className="mt-8 max-w-xl">
+                <a
+                  href="https://discord.gg/rp3wRwG7QU"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-line bg-panel-soft p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <MessageCircle size={18} className="shrink-0 text-accent" />
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        UzCord
+                      </span>
+                      <span className="block truncate text-xs text-muted">
+                        {locale === "uz"
+                          ? "Discord'dagi UzCord o'zbek hamjamiyatiga qo'shiling"
+                          : "Join the UzCord uzbek community on Discord"}
+                      </span>
+                    </span>
+                  </span>
+                  <ArrowUpRight size={16} className="shrink-0" />
+                </a>
+              </div>
             </div>
             <div className="grid gap-3">
               <button
