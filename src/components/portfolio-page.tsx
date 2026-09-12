@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTheme } from "next-themes";
 import {
@@ -303,6 +304,18 @@ const skillGroups = [
 
 const projects = [
   {
+    name: "3D Models Showcase",
+    status: "Subdomain",
+    description:
+      "A subdomain project showcasing 3D models and experiments, connected to my Sketchfab profile.",
+    problem:
+      "Provides an interactive space to display 3D assets and experiments directly on a dedicated subdomain.",
+    stack: ["Next.js", "3D", "Sketchfab"],
+    demo: "https://models.samirdev.uz",
+    github: "https://github.com/samirdevuz/models.samirdev.uz",
+    visual: "3dmodels",
+  },
+  {
     name: "Personal Portfolio",
     status: "This site",
     description:
@@ -396,6 +409,18 @@ const localizedData = {
       },
     ],
     projects: [
+      {
+        name: "3D Models Showcase",
+        status: "Subdomen",
+        description:
+          "Sketchfab profilimga ulangan, 3D modellar va tajribalarni ko'rsatuvchi subdomen loyihasi.",
+        problem:
+          "3D aktivlar va tajribalarni alohida subdomenda ko'rsatish uchun interaktiv maydon beradi.",
+        stack: ["Next.js", "3D", "Sketchfab"],
+        demo: "https://models.samirdev.uz",
+        github: "https://github.com/samirdevuz/models.samirdev.uz",
+        visual: "3dmodels",
+      },
       {
         name: "Personal Portfolio",
         status: "Shu sayt",
@@ -948,6 +973,51 @@ function ProjectMockup({ type }: { type: string }) {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "3dmodels") {
+    return (
+      <div className="mt-6 rounded-xl border border-line bg-panel-soft p-3">
+        <div className="rounded-lg border border-line bg-background p-4">
+          <div className="flex items-center justify-between border-b border-line pb-3">
+            <span className="font-mono text-xs text-accent">models.samirdev.uz</span>
+            <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-accent font-mono">
+              Sketchfab
+            </span>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
+            <div className="flex flex-col justify-between rounded-md border border-line bg-panel p-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] text-muted">Viewport 3D</span>
+                <span className="size-1.5 rounded-full bg-accent" />
+              </div>
+              <div className="my-3 flex items-center justify-center py-4">
+                <div className="relative flex size-16 items-center justify-center rounded-lg border border-line bg-background text-accent shadow-sm">
+                  <Layers3 size={28} />
+                </div>
+              </div>
+              <div className="flex justify-between text-[10px] text-muted font-mono">
+                <span>WebGL / WebGPU</span>
+                <span>Interactive</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {["Model #1", "Model #2", "Model #3", "Model #4"].map((item) => (
+                <div
+                  key={item}
+                  className="flex flex-col justify-between rounded-md border border-line bg-panel p-2 text-center"
+                >
+                  <div className="mx-auto flex size-6 items-center justify-center rounded bg-panel-soft text-accent">
+                    <Layers3 size={12} />
+                  </div>
+                  <span className="mt-2 font-mono text-[10px] text-muted">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -1627,16 +1697,31 @@ export function PortfolioPage({
       </SectionReveal>
 
       <footer className="border-t border-line px-5 py-8 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-muted sm:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-muted sm:flex-row">
           <p>
             © 2026 Samir Abdumo&apos;minov. {t.footer as string}
           </p>
-          <a
-            href="#home"
-            className="text-foreground transition-colors hover:text-accent"
-          >
-            {t.backToTop as string}
-          </a>
+          <div className="flex items-center gap-4">
+            <Script
+              src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+              strategy="lazyOnload"
+              data-name="bmc-button"
+              data-slug="samirdevuz"
+              data-color="#ffffff"
+              data-emoji=""
+              data-font="Arial"
+              data-text="Buy me a coffee"
+              data-outline-color="#000000"
+              data-font-color="#000000"
+              data-coffee-color="#FFDD00"
+            />
+            <a
+              href="#home"
+              className="text-foreground transition-colors hover:text-accent"
+            >
+              {t.backToTop as string}
+            </a>
+          </div>
         </div>
       </footer>
     </main>
