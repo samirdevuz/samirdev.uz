@@ -307,9 +307,9 @@ const projects = [
     name: "3D Models Showcase",
     status: "Subdomain",
     description:
-      "A subdomain project showcasing 3D models and experiments, connected to my Sketchfab profile.",
+      "A subdomain project serving as an archive of my 3D models from Sketchfab, showcasing interactive 3D assets and experiments.",
     problem:
-      "Provides an interactive space to display 3D assets and experiments directly on a dedicated subdomain.",
+      "Provides an interactive space to archive and display 3D models from Sketchfab directly on a dedicated subdomain.",
     stack: ["Next.js", "3D", "Sketchfab"],
     demo: "https://models.samirdev.uz",
     github: "https://github.com/samirdevuz/models.samirdev.uz",
@@ -413,9 +413,9 @@ const localizedData = {
         name: "3D Models Showcase",
         status: "Subdomen",
         description:
-          "Sketchfab profilimga ulangan, 3D modellar va tajribalarni ko'rsatuvchi subdomen loyihasi.",
+          "Sketchfab profilimdagi 3D modellar arxivi bo'lgan hamda interaktiv 3D aktivlar va tajribalarni ko'rsatuvchi subdomen loyihasi.",
         problem:
-          "3D aktivlar va tajribalarni alohida subdomenda ko'rsatish uchun interaktiv maydon beradi.",
+          "Sketchfab'dagi 3D modellarni alohida subdomenda arxivlash va ko'rsatish uchun interaktiv maydon beradi.",
         stack: ["Next.js", "3D", "Sketchfab"],
         demo: "https://models.samirdev.uz",
         github: "https://github.com/samirdevuz/models.samirdev.uz",
@@ -1153,6 +1153,31 @@ export function PortfolioPage({
     document.documentElement.lang = locale;
   }, [locale]);
 
+  useEffect(() => {
+    const origWriteln = document.writeln;
+    const origWrite = document.write;
+
+    const handleWrite = (html: string) => {
+      const container = document.getElementById("bmc-button-container");
+      if (container) {
+        container.innerHTML = html;
+      }
+    };
+
+    document.writeln = function (...args: string[]) {
+      handleWrite(args.join(""));
+    };
+
+    document.write = function (...args: string[]) {
+      handleWrite(args.join(""));
+    };
+
+    return () => {
+      document.writeln = origWriteln;
+      document.write = origWrite;
+    };
+  }, []);
+
   const updateLocale = (nextLocale: Locale) => {
     setLocale(nextLocale);
   };
@@ -1702,6 +1727,7 @@ export function PortfolioPage({
             © 2026 Samir Abdumo&apos;minov. {t.footer as string}
           </p>
           <div className="flex items-center gap-4">
+            <div id="bmc-button-container" className="inline-flex items-center" />
             <Script
               src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
               strategy="lazyOnload"
