@@ -4,7 +4,11 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import seedPosts from "./blog-posts.json";
 import type { BlogPost } from "./blog";
-import { fetchSupabasePosts, saveSupabasePosts } from "@/lib/supabase";
+import {
+  deleteSupabasePost,
+  fetchSupabasePosts,
+  saveSupabasePosts,
+} from "@/lib/supabase";
 
 const sourcePostsFile = join(process.cwd(), "src", "data", "blog-posts.json");
 const runtimePostsFile =
@@ -61,6 +65,28 @@ export async function saveAllPosts(posts: BlogPost[]) {
   }
 
   return sortedPosts;
+}
+
+export async function deletePostBySlug(slug: string) {
+  const posts = await getAllPosts();
+  const nextPosts = posts.filter((post) => post.slug !== slug);
+
+  // Delete from Supabase if configured
+  await deleteSupabasePost(slug);
+
+  // Update file storage
+  try {
+    await mkdir(dirname(runtimePostsFile), { recursive: true });
+    await writeFile(
+      runtimePostsFile,
+      `${JSON.stringify(nextPosts, null, 2)}\n`,
+      "utf8",
+    );
+  } catch {
+    // ignore if read-only filesystem
+  }
+
+  return nextPosts;
 }
 
 export function getPostsStoragePath() {

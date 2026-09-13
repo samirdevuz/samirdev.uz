@@ -258,7 +258,9 @@ export function AdminDashboard() {
     async function init() {
       const [pRes, aRes, scRes, sysRes] = await Promise.all([
         fetch("/api/admin/posts", { cache: "no-store" }).catch(() => null),
-        fetch("/api/admin/analytics", { cache: "no-store" }).catch(() => null),
+        fetch(`/api/admin/analytics?range=${encodeURIComponent(dateRange)}`, {
+          cache: "no-store",
+        }).catch(() => null),
         fetch("/api/admin/site-content", { cache: "no-store" }).catch(
           () => null,
         ),
@@ -311,7 +313,7 @@ export function AdminDashboard() {
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, selectedSlug]);
+  }, [isAuthenticated, selectedSlug, dateRange]);
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1283,6 +1285,94 @@ export function AdminDashboard() {
                         className="rounded-xl border border-line bg-panel p-3 text-sm outline-none focus:border-accent"
                       />
                     </label>
+                  </div>
+
+                  {/* Skill Groups */}
+                  <div className="mt-6 space-y-4">
+                    <p className="font-mono text-xs uppercase text-muted">
+                      Skill Stack Groups
+                    </p>
+                    {siteContent[siteContentSubTab].skillGroups.map(
+                      (sg, idx) => (
+                        <div
+                          key={sg.title}
+                          className="grid gap-3 rounded-lg border border-line bg-panel p-4 md:grid-cols-2"
+                        >
+                          <label className="grid gap-1 text-xs font-medium">
+                            Group Title
+                            <input
+                              value={sg.title}
+                              onChange={(e) => {
+                                const newSg = [
+                                  ...siteContent[siteContentSubTab].skillGroups,
+                                ];
+                                newSg[idx] = {
+                                  ...newSg[idx],
+                                  title: e.target.value,
+                                };
+                                setSiteContent((cur) => ({
+                                  ...cur,
+                                  [siteContentSubTab]: {
+                                    ...cur[siteContentSubTab],
+                                    skillGroups: newSg,
+                                  },
+                                }));
+                              }}
+                              className="h-9 rounded-lg border border-line bg-background px-2.5 text-xs outline-none focus:border-accent"
+                            />
+                          </label>
+                          <label className="grid gap-1 text-xs font-medium">
+                            Skills (comma separated)
+                            <input
+                              value={sg.skills.join(", ")}
+                              onChange={(e) => {
+                                const newSg = [
+                                  ...siteContent[siteContentSubTab].skillGroups,
+                                ];
+                                newSg[idx] = {
+                                  ...newSg[idx],
+                                  skills: e.target.value
+                                    .split(",")
+                                    .map((s) => s.trim()),
+                                };
+                                setSiteContent((cur) => ({
+                                  ...cur,
+                                  [siteContentSubTab]: {
+                                    ...cur[siteContentSubTab],
+                                    skillGroups: newSg,
+                                  },
+                                }));
+                              }}
+                              className="h-9 rounded-lg border border-line bg-background px-2.5 text-xs outline-none focus:border-accent"
+                            />
+                          </label>
+                          <label className="grid gap-1 text-xs font-medium md:col-span-2">
+                            Description
+                            <textarea
+                              value={sg.description}
+                              onChange={(e) => {
+                                const newSg = [
+                                  ...siteContent[siteContentSubTab].skillGroups,
+                                ];
+                                newSg[idx] = {
+                                  ...newSg[idx],
+                                  description: e.target.value,
+                                };
+                                setSiteContent((cur) => ({
+                                  ...cur,
+                                  [siteContentSubTab]: {
+                                    ...cur[siteContentSubTab],
+                                    skillGroups: newSg,
+                                  },
+                                }));
+                              }}
+                              rows={2}
+                              className="rounded-lg border border-line bg-background p-2.5 text-xs outline-none focus:border-accent"
+                            />
+                          </label>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
 

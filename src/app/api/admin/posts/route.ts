@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { BlogPost } from "@/data/blog";
-import { getAllPosts, saveAllPosts } from "@/data/blog-store";
+import { deletePostBySlug, getAllPosts, saveAllPosts } from "@/data/blog-store";
 import { isAdminRequest } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
@@ -64,18 +64,25 @@ export async function POST(request: NextRequest) {
       slug?: string;
       originalSlug?: string;
     };
-    const posts = await getAllPosts();
 
     if (body.action === "delete") {
       const slug = slugify(String(body.slug ?? ""));
-      const nextPosts = posts.filter((post) => post.slug !== slug);
-      const response = NextResponse.json({ posts: await saveAllPosts(nextPosts) });
+      const response = NextResponse.json({
+        posts: await deletePostBySlug(slug),
+      });
       response.headers.set("cache-control", "no-store");
       return response;
     }
 
+    const posts = await getAllPosts();
     const nextPost = validatePost(body.post);
     const originalSlug = slugify(String(body.originalSlug ?? ""));
+
+    // If slug changed, delete original post from Supabase
+    if (originalSlug && originalSlug !== nextPost.slug) {
+      await deletePostBySlug(originalSlug);
+    }
+
     const withoutExisting = posts.filter(
       (post) => post.slug !== nextPost.slug && post.slug !== originalSlug,
     );
