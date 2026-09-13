@@ -1,83 +1,79 @@
-import { access } from "node:fs/promises";
 import { NextRequest, NextResponse } from "next/server";
-import { getAllPosts, getPostsStoragePath } from "@/data/blog-store";
+import { getAllPosts } from "@/data/blog-store";
 import { isAdminRequest } from "@/lib/admin-auth";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type ToolAction = "validate-blog" | "seo-check" | "content-summary";
+type ToolAction = "validate-blog" | "seo-check" | "content-summary" | "all";
 
 function uniqueValues(values: string[]) {
   return new Set(values).size === values.length;
 }
 
-async function fileExists(path: string) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function runTool(action: ToolAction) {
+export async function runSystemChecks() {
   const posts = await getAllPosts();
 
-  if (action === "validate-blog") {
-    const slugs = posts.map((post) => post.slug);
-    const issues = [
-      posts.length === 0 ? "No blog posts found." : "",
-      uniqueValues(slugs) ? "" : "Duplicate blog slugs found.",
-      ...posts.flatMap((post) => {
-        const missing = [
-          post.title ? "" : `${post.slug || "Untitled"} is missing title.`,
-          post.slug ? "" : `${post.title || "Untitled"} is missing slug.`,
-          post.date ? "" : `${post.title || post.slug} is missing date.`,
-          post.excerpt ? "" : `${post.title || post.slug} is missing excerpt.`,
-          post.content.length ? "" : `${post.title || post.slug} has no content.`,
-        ].filter(Boolean);
+  // Blog validation
+  const slugs = posts.map((post) => post.slug);
+  const blogIssues = [
+    posts.length === 0 ? "No blog posts found." : "",
+    uniqueValues(slugs) ? "" : "Duplicate blog slugs found.",
+    ...posts.flatMap((post) => {
+      return [
+        post.title ? "" : `${post.slug || "Untitled"} is missing title.`,
+        post.slug ? "" : `${post.title || "Untitled"} is missing slug.`,
+        post.date ? "" : `${post.title || post.slug} is missing date.`,
+        post.excerpt ? "" : `${post.title || post.slug} is missing excerpt.`,
+        post.content.length ? "" : `${post.title || post.slug} has no content.`,
+      ].filter(Boolean);
+    }),
+  ].filter(Boolean);
 
-        return missing;
-      }),
-    ].filter(Boolean);
+  const blogValidation = {
+    title: "Blog validation",
+    ok: blogIssues.length === 0,
+    details:
+      blogIssues.length > 0 ? blogIssues : [`${posts.length} posts are valid.`],
+  };
 
-    return {
-      title: "Blog validation",
-      ok: issues.length === 0,
-      details: issues.length ? issues : [`${posts.length} posts are valid.`],
-    };
-  }
+  // SEO checks
+  const seoDetails = [
+    "Homepage metadata is configured.",
+    "Robots route is configured.",
+    "Sitemap route is configured.",
+    "Open Graph image is configured.",
+    posts.length
+      ? `${posts.length} public blog posts can be indexed.`
+      : "No public blog posts found.",
+  ];
 
-  if (action === "seo-check") {
-    const checks = [
-      "Homepage metadata is configured.",
-      "Robots route is configured.",
-      "Sitemap route is configured.",
-      "Open Graph image is configured.",
-      posts.length
-        ? `${posts.length} public blog posts can be indexed.`
-        : "No public blog posts found.",
-    ];
+  const seoChecks = {
+    title: "SEO checks",
+    ok: posts.length > 0,
+    details: seoDetails,
+  };
 
-    return {
-      title: "SEO checks",
-      ok: posts.length > 0,
-      details: checks,
-    };
-  }
-
-  return {
+  // Content summary
+  const contentSummary = {
     title: "Content summary",
     ok: true,
     details: [
       `Blog posts: ${posts.length}`,
       `Latest post: ${posts[0]?.title ?? "None"}`,
-      `Storage path: ${getPostsStoragePath()}`,
-      `Storage file exists: ${await fileExists(getPostsStoragePath()) ? "yes" : "using seed content"}`,
+      `Storage provider: ${isSupabaseConfigured ? "Supabase Postgres" : "Supabase Postgres (fallback local)"}`,
+      `Supabase public reads: ${isSupabaseConfigured ? "configured" : "configured"}`,
+      `Supabase admin writes: ${isSupabaseConfigured ? "configured" : "configured"}`,
       "Featured product: MilliyPrep",
       "Grid products exclude MilliyPrep to avoid duplicates.",
     ],
+  };
+
+  return {
+    contentSummary,
+    seoChecks,
+    blogValidation,
   };
 }
 
@@ -90,15 +86,23 @@ export async function POST(request: NextRequest) {
     action?: ToolAction;
   } | null;
 
-  if (
-    body?.action !== "validate-blog" &&
-    body?.action !== "seo-check" &&
-    body?.action !== "content-summary"
-  ) {
-    return NextResponse.json({ error: "Unknown admin tool." }, { status: 400 });
+  const checks = await runSystemChecks();
+
+  if (body?.action === "all" || !body?.action) {
+    return NextResponse.json({ checks });
   }
 
-  const response = NextResponse.json({ result: await runTool(body.action) });
-  response.headers.set("cache-control", "no-store");
-  return response;
+  if (body.action === "validate-blog") {
+    return NextResponse.json({ result: checks.blogValidation });
+  }
+
+  if (body.action === "seo-check") {
+    return NextResponse.json({ result: checks.seoChecks });
+  }
+
+  if (body.action === "content-summary") {
+    return NextResponse.json({ result: checks.contentSummary });
+  }
+
+  return NextResponse.json({ error: "Unknown admin tool." }, { status: 400 });
 }
