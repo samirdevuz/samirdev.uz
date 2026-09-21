@@ -1,17 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfbf8;
-  --foreground: #141414;
-  --muted: #6f706d;
-  --line: #e4e2dc;
+  --background: #f2f3f5;
+  --foreground: #060607;
+  --muted: #4f5660;
+  --line: #e3e5e8;
   --panel: #ffffff;
-  --panel-soft: #f4f3ef;
-  --accent: #2f4f46;
-  --accent-soft: #dfeae4;
-  --shadow: 0 24px 80px rgba(25, 28, 24, 0.08);
-  --font-geist-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-geist-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --panel-soft: #ebedef;
+  --accent: #5865f2;
+  --accent-soft: #e0e3ff;
+  --blurple: #5865f2;
+  --blurple-hover: #4752c4;
+  --discord-green: #23a55a;
+  --discord-yellow: #fee75c;
+  --discord-red: #f23f43;
+  --discord-nitro: #eb459e;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  --font-geist-sans: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-geist-mono: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Courier New", monospace;
 }
 
 @theme inline {
@@ -23,6 +29,12 @@
   --color-panel-soft: var(--panel-soft);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-blurple: var(--blurple);
+  --color-blurple-hover: var(--blurple-hover);
+  --color-discord-green: var(--discord-green);
+  --color-discord-yellow: var(--discord-yellow);
+  --color-discord-red: var(--discord-red);
+  --color-discord-nitro: var(--discord-nitro);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -30,15 +42,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
-  --background: #090a09;
-  --foreground: #f3f1eb;
-  --muted: #aaa8a0;
-  --line: #252722;
-  --panel: #10110f;
-  --panel-soft: #171914;
-  --accent: #9db8a6;
-  --accent-soft: #1b2a22;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  --background: #313338;
+  --foreground: #f2f3f5;
+  --muted: #949ba4;
+  --line: #1f2023;
+  --panel: #2b2d31;
+  --panel-soft: #1e1f22;
+  --accent: #5865f2;
+  --accent-soft: #2b2d56;
+  --blurple: #5865f2;
+  --blurple-hover: #4752c4;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -53,13 +67,33 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   text-rendering: geometricPrecision;
 }
 
 ::selection {
-  background: var(--accent-soft);
-  color: var(--foreground);
+  background: #5865f2;
+  color: #ffffff;
+}
+
+/* Custom Discord Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1b1e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #111214;
 }
 
 @media (prefers-reduced-motion: reduce) {
