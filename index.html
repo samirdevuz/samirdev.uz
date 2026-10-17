@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Samir Abdumo‘minov — Product builder</title>
+    <meta name="description" content="Samir Abdumo‘minov (samirdevuz) — product builder from Sirdaryo, building products for everyday problems." />
+    <meta name="theme-color" content="#f6f7fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15171d" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Samir Abdumo‘minov — Product builder" />
+    <meta property="og:description" content="Building products for everyday problems." />
+    <meta property="og:url" content="https://samirdev.uz" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Minimal intro loader: inline so it paints before the JS bundle loads -->
+    <style>
+      #loader {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: #f6f7fa;
+        color: #1b1e27;
+        font: 500 13px/1 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+        transition: opacity 0.35s ease, visibility 0.35s;
+      }
+      #loader.is-done {
+        opacity: 0;
+        visibility: hidden;
+      }
+      #loader .l-inner {
+        display: grid;
+        gap: 14px;
+        width: 140px;
+      }
+      #loader .l-caret {
+        color: #2f9e55;
+        animation: l-blink 0.5s steps(1) infinite;
+      }
+      #loader .l-bar {
+        height: 2px;
+        background: rgba(127, 127, 127, 0.2);
+        overflow: hidden;
+        border-radius: 2px;
+      }
+      #loader .l-bar::after {
+        content: '';
+        display: block;
+        height: 100%;
+        background: #c9f05b;
+        transform-origin: left;
+        animation: l-fill 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      @keyframes l-fill {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+      }
+      @keyframes l-blink {
+        50% { opacity: 0; }
+      }
+      @media (prefers-color-scheme: dark) {
+        #loader { background: #15171d; color: #eef0f4; }
+        #loader .l-caret { color: #a6e36b; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #loader .l-caret { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader" aria-hidden="true">
+      <div class="l-inner">
+        <span>samirdevuz<span class="l-caret">_</span></span>
+        <div class="l-bar"></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

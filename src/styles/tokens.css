@@ -1,0 +1,46 @@
+:root {
+  color-scheme: light;
+  --bg: oklch(0.975 0.004 250);
+  --bg-raised: oklch(1 0 0);
+  --fg: oklch(0.2 0.02 265);
+  --muted: oklch(0.5 0.02 260);
+  --line: oklch(0.88 0.008 260);
+  --accent: oklch(0.55 0.16 150);
+  --mark: oklch(0.9 0.18 125);
+  --mark-fg: oklch(0.2 0.03 140);
+  --grid-dot: oklch(0.82 0.01 260);
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-sans: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1200px;
+  --section-pad: clamp(72px, 10vw, 140px);
+  --radius: 14px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: oklch(0.17 0.012 265);
+    --bg-raised: oklch(0.21 0.014 265);
+    --fg: oklch(0.95 0.005 250);
+    --muted: oklch(0.68 0.015 260);
+    --line: oklch(0.3 0.014 265);
+    --accent: oklch(0.8 0.17 140);
+    --grid-dot: oklch(0.32 0.014 265);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: oklch(0.17 0.012 265);
+  --bg-raised: oklch(0.21 0.014 265);
+  --fg: oklch(0.95 0.005 250);
+  --muted: oklch(0.68 0.015 260);
+  --line: oklch(0.3 0.014 265);
+  --accent: oklch(0.8 0.17 140);
+  --grid-dot: oklch(0.32 0.014 265);
+}

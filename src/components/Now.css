@@ -1,0 +1,83 @@
+.now {
+  background: oklch(0.2 0.02 265);
+  color: oklch(0.95 0.005 250);
+  border-radius: calc(var(--radius) * 1.6);
+  padding: clamp(28px, 5vw, 64px);
+  border: 1px solid oklch(0.32 0.014 265);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Lime glow in the corner */
+.now::after {
+  content: '';
+  position: absolute;
+  right: -120px;
+  top: -120px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: var(--mark);
+  opacity: 0.16;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.now__prompt {
+  color: oklch(0.7 0.015 260);
+  margin-bottom: clamp(28px, 4vw, 48px);
+  overflow-wrap: anywhere;
+}
+
+.now__ps {
+  color: var(--mark);
+  margin-right: 6px;
+}
+
+.now__cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background: var(--mark);
+  animation: cursor 1.1s steps(1) infinite;
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.now__title {
+  max-width: 16ch;
+}
+
+.now__text {
+  max-width: 56ch;
+  margin-top: 20px;
+  color: oklch(0.75 0.015 260);
+  font-size: clamp(16px, 1.5vw, 19px);
+}
+
+.now__btn {
+  margin-top: 32px;
+  background: var(--mark);
+  color: var(--mark-fg);
+  border-color: var(--mark);
+}
+
+.now__btn:hover {
+  box-shadow: 4px 4px 0 oklch(0.95 0.005 250);
+  transform: translate(-2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .now__cursor {
+    animation: none;
+  }
+  .now__btn:hover {
+    transform: none;
+  }
+}

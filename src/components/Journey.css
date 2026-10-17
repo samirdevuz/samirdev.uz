@@ -1,0 +1,101 @@
+/* Horizontal track on desktop, vertical on mobile */
+.track {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(var(--count), 1fr);
+  gap: 24px;
+  position: relative;
+}
+
+.track__item {
+  display: grid;
+  grid-template-rows: auto 24px auto;
+  gap: 16px;
+}
+
+.track__year {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.track__item:last-child .track__year {
+  color: var(--accent);
+}
+
+/* The rail line runs through every node */
+.track__rail {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.track__rail::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: -24px;
+  top: 50%;
+  height: 1px;
+  background: var(--line);
+}
+
+.track__item:last-child .track__rail::before {
+  right: 0;
+  background: linear-gradient(to right, var(--line), transparent);
+}
+
+.track__node {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--fg);
+}
+
+.track__item:last-child .track__node {
+  background: var(--mark);
+  border-color: var(--mark-fg);
+}
+
+.track__body {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+
+.track__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.track__head h3 {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.track__body p {
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .track {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .track__item {
+    grid-template-rows: auto;
+  }
+  .track__rail {
+    display: none;
+  }
+}

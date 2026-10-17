@@ -1,0 +1,206 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--mark);
+  color: var(--mark-fg);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: calc(var(--section-pad) * 0.6) 0;
+}
+
+.section:first-of-type {
+  padding-top: var(--section-pad);
+}
+
+.section:last-child {
+  padding-bottom: var(--section-pad);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.9rem, 8.4vw, 7rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(2.1rem, 5vw, 3.9rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+/* The highlight covers only the x-height band, so it never paints over
+   descenders of the line above (e.g. the "p" in "products"). */
+.mark {
+  background: linear-gradient(
+    transparent 18%,
+    var(--mark) 18%,
+    var(--mark) 100%
+  );
+  color: var(--mark-fg);
+  padding: 0 0.1em;
+  border-radius: 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* Section head: [01] about ———— */
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(36px, 5vw, 64px);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+.sec-head .num {
+  color: var(--accent);
+}
+
+.sec-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid var(--fg);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    transform 0.2s var(--ease);
+}
+
+.btn .arrow {
+  transition: transform 0.2s var(--ease);
+}
+
+.btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+.btn-solid {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.btn-solid:hover {
+  box-shadow: 4px 4px 0 var(--mark);
+  transform: translate(-2px, -2px);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-raised);
+}
+
+.link-underline {
+  background-image: linear-gradient(var(--mark), var(--mark));
+  background-size: 0% 0.35em;
+  background-position: 0 88%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s var(--ease);
+}
+
+.link-underline:hover {
+  background-size: 100% 0.35em;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .btn,
+  .btn:hover,
+  .btn:hover .arrow {
+    transform: none;
+  }
+}

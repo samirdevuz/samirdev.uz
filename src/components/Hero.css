@@ -1,0 +1,119 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: 120px 0 72px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Dot grid backdrop, fading out toward the bottom */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+}
+
+.hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-raised);
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.hero__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 60%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.hero__title {
+  max-width: 13ch;
+}
+
+.hero__bottom {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+  margin-top: clamp(40px, 6vw, 72px);
+}
+
+.hero__intro {
+  max-width: 50ch;
+  font-size: clamp(17px, 1.6vw, 20px);
+  color: var(--muted);
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hero__card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 20px;
+  transition-delay: 0.1s;
+}
+
+.hero__card > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.hero__card > div + div {
+  border-top: 1px dashed var(--line);
+}
+
+.hero__card dt {
+  color: var(--muted);
+}
+
+.hero__card dt::after {
+  content: ':';
+}
+
+.hero__card dd {
+  text-align: right;
+}
+
+@media (max-width: 860px) {
+  .hero__bottom {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__dot {
+    animation: none;
+  }
+}
