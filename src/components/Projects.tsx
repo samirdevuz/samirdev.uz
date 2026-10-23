@@ -1,49 +1,39 @@
 import { content } from '../content'
-import { SectionHead } from './SectionHead'
+import { Block } from './Block'
 import './Projects.css'
 
-export function Projects({ num }: { num: string }) {
+export function Projects() {
+  const { openSlot } = content
   return (
-    <section className="section" id="projects">
-      <div className="container">
-        <SectionHead num={num} label="projects" />
-        <ul className="projects">
-          {content.projects.map((p, i) => {
-            const live = p.status === 'Live'
-            const inner = (
-              <>
-                <div className="project__top">
-                  <span className={`project__status mono${live ? ' is-live' : ''}`}>
-                    <span className="project__dot" aria-hidden="true" />
-                    {p.status}
-                  </span>
-                  {p.href && <span className="mono project__url">{p.href.replace(/^https?:\/\//, '')} ↗</span>}
-                </div>
-                <h3 className="project__name">{p.name}</h3>
-                <p className="project__text">{p.text}</p>
-                <div className="project__tags">
-                  {p.tags.map((t) => (
-                    <span key={t} className="tag">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )
-            return (
-              <li key={p.name} className="reveal" style={{ transitionDelay: `${i * 0.08}s` }}>
-                {p.href ? (
-                  <a className="project is-link" href={p.href} target="_blank" rel="noreferrer">
-                    {inner}
-                  </a>
-                ) : (
-                  <div className="project is-wip">{inner}</div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    </section>
+    <Block id="projects" label="Projects">
+      <ul className="work">
+        {content.projects.map((p) => (
+          <li key={p.name} className="reveal">
+            <a className="work__row" href={p.href} target="_blank" rel="noreferrer">
+              <span className="work__head">
+                <span className="work__name">{p.name}</span>
+                <span className="work__tags mono">{p.tags.join(' · ')}</span>
+              </span>
+              <span className="work__text">{p.text}</span>
+              <span className="work__link mono">
+                {p.href.replace(/^https?:\/\//, '')} <span className="work__arrow">↗</span>
+              </span>
+            </a>
+          </li>
+        ))}
+        <li className="reveal">
+          <a className="work__row work__row--open" href={`mailto:${content.contact.email}`}>
+            <span className="work__head">
+              <span className="work__name">{openSlot.name}</span>
+              <span className="work__tags mono">Open slot</span>
+            </span>
+            <span className="work__text">{openSlot.text}</span>
+            <span className="work__link mono">
+              {openSlot.cta} <span className="work__arrow">→</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </Block>
   )
 }

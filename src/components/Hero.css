@@ -53,65 +53,90 @@
 
 .hero__bottom {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: clamp(32px, 6vw, 96px);
-  align-items: end;
-  margin-top: clamp(40px, 6vw, 72px);
+  justify-items: start;
+  gap: 24px;
+  margin-top: clamp(32px, 5vw, 56px);
 }
 
 .hero__intro {
-  max-width: 50ch;
-  font-size: clamp(17px, 1.6vw, 20px);
+  max-width: 46ch;
+  font-size: clamp(17px, 1.6vw, 19px);
   color: var(--muted);
 }
 
 .hero__cta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
+  align-items: center;
+  gap: 24px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.hero__card {
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 8px 20px;
+.hero__primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--fg);
+  color: var(--bg);
+  transition: opacity 0.2s var(--ease);
+}
+
+.hero__primary:hover {
+  opacity: 0.85;
+}
+
+.hero__arrow {
+  transition: transform 0.2s var(--ease);
+}
+
+.hero__primary:hover .hero__arrow {
+  transform: translateX(3px);
+}
+
+.hero__secondary {
+  color: var(--muted);
+  transition: color 0.2s var(--ease);
+}
+
+.hero__secondary:hover {
+  color: var(--fg);
+}
+
+/* Facts as one hairline-ruled row, like the sections below. */
+.hero__facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px 32px;
+  margin-top: clamp(40px, 6vw, 72px);
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
   transition-delay: 0.1s;
 }
 
-.hero__card > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 0;
-}
-
-.hero__card > div + div {
-  border-top: 1px dashed var(--line);
-}
-
-.hero__card dt {
+.hero__facts dt {
+  font-size: 13px;
   color: var(--muted);
 }
 
-.hero__card dt::after {
-  content: ':';
+.hero__facts dd {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.hero__card dd {
-  text-align: right;
-}
-
-@media (max-width: 860px) {
-  .hero__bottom {
-    grid-template-columns: 1fr;
-    align-items: start;
+@media (max-width: 760px) {
+  .hero__facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero__dot {
     animation: none;
+  }
+  .hero__primary:hover .hero__arrow {
+    transform: none;
   }
 }

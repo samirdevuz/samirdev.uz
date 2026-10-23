@@ -5,10 +5,10 @@ import './Hero.css'
 export function Hero() {
   const { headline } = content
   const facts = [
-    ['name', content.name],
-    ['role', content.role],
-    ['based', content.location],
-    ['since', content.about.stats[0].value],
+    ['Name', content.name],
+    ['Role', content.role],
+    ['Based in', content.location],
+    ['Building since', content.since],
   ]
 
   return (
@@ -23,28 +23,26 @@ export function Hero() {
           {headline.before} <span className="mark">{headline.mark}</span> {headline.after}
         </h1>
 
-        <div className="hero__bottom">
-          <div className="reveal">
-            <p className="hero__intro">{content.intro}</p>
-            <div className="hero__cta">
-              <a href={`mailto:${content.contact.email}`} className="btn btn-solid">
-                Write to me <span className="arrow">→</span>
-              </a>
-              <a href="#about" className="btn btn-ghost">
-                About me
-              </a>
-            </div>
+        <div className="hero__bottom reveal">
+          <p className="hero__intro">{content.intro}</p>
+          <div className="hero__cta">
+            <a href={`mailto:${content.contact.email}`} className="hero__primary">
+              Write to me <span className="hero__arrow">→</span>
+            </a>
+            <a href="#projects" className="hero__secondary">
+              See projects
+            </a>
           </div>
-
-          <dl className="hero__card mono reveal">
-            {facts.map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd>{v}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
+
+        <dl className="hero__facts reveal">
+          {facts.map(([k, v]) => (
+            <div key={k}>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )

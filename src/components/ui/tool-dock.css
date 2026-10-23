@@ -1,0 +1,118 @@
+.tool-dock {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  container-type: inline-size;
+}
+
+/* Reserves room above the row for the lifted tile and its label. */
+.tool-dock-stage {
+  position: relative;
+  width: fit-content;
+  padding-top: calc(var(--tool-dock-size) * var(--tool-dock-rise) + 2.75rem);
+}
+
+.tool-dock-rail {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  list-style: none;
+  touch-action: pan-y;
+}
+
+.tool-dock-slot {
+  position: relative;
+  display: flex;
+  pointer-events: none;
+}
+
+.tool-dock-icon {
+  width: var(--tool-dock-size);
+  height: var(--tool-dock-size);
+  transform-origin: bottom;
+  will-change: transform;
+  user-select: none;
+}
+
+.tool-dock-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 23%;
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.08),
+    0 1px 1.5px rgb(0 0 0 / 0.16),
+    0 0 0.5px rgb(0 0 0 / 0.12);
+}
+
+.tool-dock-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.15), transparent);
+  box-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.14),
+    inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+
+.tool-dock-tile img {
+  display: block;
+  object-fit: contain;
+  -webkit-user-drag: none;
+}
+
+.tool-dock-tip {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--tool-dock-size) * (1 + var(--tool-dock-rise)) + 0.625rem);
+  z-index: 50;
+  padding: 4px 10px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tool-dock-tip.is-gliding {
+  transition:
+    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tool-dock-tip[data-state='open'] {
+  opacity: 1;
+}
+
+.tool-dock-tip-arrow {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  rotate: 45deg;
+  background: var(--bg-raised);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-bottom-right-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-dock-tip,
+  .tool-dock-tip.is-gliding {
+    transition: none;
+  }
+}

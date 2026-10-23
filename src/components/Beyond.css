@@ -1,0 +1,61 @@
+.beyond {
+  list-style: none;
+}
+
+.beyond li {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 6px 32px;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Dividers only between rows, so the first one lines up with the label. */
+.beyond > li:first-child {
+  padding-top: 0;
+}
+
+.beyond > li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.beyond__when {
+  color: var(--muted);
+}
+
+.beyond__when.is-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+}
+
+.beyond__when.is-now::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.beyond__title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.beyond__text {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+@media (max-width: 860px) {
+  .beyond li {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+  .beyond__text {
+    grid-column: 2;
+  }
+}

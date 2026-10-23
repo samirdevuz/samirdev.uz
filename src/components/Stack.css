@@ -1,0 +1,7 @@
+/* The dock reserves headroom for its tooltip; on desktop let that overlap the
+   block's top padding so the tiles line up with the label. */
+@media (min-width: 761px) {
+  .stack__dock {
+    margin-top: calc(-2.75rem - 60px * 0.47);
+  }
+}

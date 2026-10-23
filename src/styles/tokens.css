@@ -10,13 +10,13 @@
   --mark-fg: oklch(0.2 0.03 140);
   --grid-dot: oklch(0.82 0.01 260);
 
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-sans: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+  --font-display: 'Geist', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
 
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1200px;
-  --section-pad: clamp(72px, 10vw, 140px);
+  --block-pad: clamp(56px, 8vw, 104px);
   --radius: 14px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
