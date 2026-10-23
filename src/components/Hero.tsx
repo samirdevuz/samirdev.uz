@@ -1,4 +1,5 @@
 import { content } from '../content'
+import TopoField from './ui/topo-field'
 import './Hero.css'
 
 export function Hero() {
@@ -12,6 +13,7 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
+      <TopoField className="hero__topo" />
       <div className="container">
         <p className="hero__status mono reveal">
           <span className="hero__dot" aria-hidden="true" />

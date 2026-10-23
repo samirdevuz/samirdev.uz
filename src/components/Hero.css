@@ -5,18 +5,16 @@
   align-items: center;
   padding: 120px 0 72px;
   border-bottom: 1px solid var(--line);
+  isolation: isolate;
 }
 
-/* Dot grid backdrop, fading out toward the bottom */
-.hero::before {
-  content: '';
+/* Animated topographic backdrop, fading out toward the bottom */
+.hero__topo {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
-  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  mask-image: linear-gradient(to bottom, black 40%, transparent 98%);
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 98%);
 }
 
 .hero__status {
