@@ -72,8 +72,8 @@ a {
    descenders of the line above (e.g. the "p" in "products"). */
 .mark {
   background: linear-gradient(
-    transparent 18%,
-    var(--mark) 18%,
+    transparent 30%,
+    var(--mark) 30%,
     var(--mark) 100%
   );
   color: var(--mark-fg);
