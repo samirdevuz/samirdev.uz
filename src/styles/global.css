@@ -68,19 +68,22 @@ a {
   letter-spacing: -0.035em;
 }
 
-/* The highlight covers only the x-height band, so it never paints over
-   descenders of the line above (e.g. the "p" in "products"). */
+/* The highlight is a rounded box that starts below the line above, so it
+   never paints over its descenders (e.g. the "p" in "products"). */
 .mark {
-  background: linear-gradient(
-    transparent 30%,
-    var(--mark) 30%,
-    var(--mark) 100%
-  );
+  position: relative;
+  z-index: 0;
   color: var(--mark-fg);
   padding: 0 0.1em;
+}
+
+.mark::before {
+  content: '';
+  position: absolute;
+  inset: 0.12em 0 0;
+  z-index: -1;
+  background: var(--mark);
   border-radius: 0.12em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
 }
 
 .mono {
