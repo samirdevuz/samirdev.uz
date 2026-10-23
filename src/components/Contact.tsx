@@ -42,6 +42,7 @@ export function Footer() {
       ]}
       palette={{ background: '#15171d', ink: '#eef0f4', warm: '#c9f05b' }}
       fontFamily="'Geist', system-ui, sans-serif"
+      roundDots
       monoFamily="'Geist Mono', ui-monospace, 'Cascadia Code', monospace"
       height="clamp(440px, 52vw, 600px)"
     />

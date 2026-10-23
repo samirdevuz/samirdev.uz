@@ -64,6 +64,8 @@ export interface HalftoneWordmarkFooterProps {
   fontFamily?: string
   /** Weight of the wordmark. Defaults to 800. */
   fontWeight?: number
+  /** Redraw the dot of every "i" as a circle, for faces with square dots. */
+  roundDots?: boolean
   /** Face for the small type. */
   monoFamily?: string
   /** Root height. A definite length, never a percentage. */
@@ -194,6 +196,7 @@ export default function HalftoneWordmarkFooter({
   interactive = true,
   fontFamily = SANS_STACK,
   fontWeight = 800,
+  roundDots = false,
   monoFamily = MONO_STACK,
   height = "560px",
   className = "",
@@ -201,9 +204,9 @@ export default function HalftoneWordmarkFooter({
   const colors = { ...(PRESETS[preset] || PRESETS.night), ...(palette || {}) }
   const rootRef = React.useRef(null as HTMLElement | null)
   const canvasRef = React.useRef(null as HTMLCanvasElement | null)
-  const opts = React.useRef({ colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, wordmark })
-  opts.current = { colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, wordmark }
-  const key = [wordmark, dotGap, crop, grain, fontFamily, fontWeight, colors.background, colors.ink, colors.warm].join("|")
+  const opts = React.useRef({ colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, roundDots, wordmark })
+  opts.current = { colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, roundDots, wordmark }
+  const key = [wordmark, dotGap, crop, grain, fontFamily, fontWeight, roundDots, colors.background, colors.ink, colors.warm].join("|")
 
   React.useEffect(() => {
     const root = rootRef.current
@@ -254,7 +257,26 @@ export default function HalftoneWordmarkFooter({
       const c = Math.max(0, Math.min(0.6, o.crop))
       m.fillStyle = "#000"
       m.textBaseline = "alphabetic"
-      m.fillText(word, (w - box.width) / 2, h + cap * c)
+      const x0 = (w - box.width) / 2
+      const base = h + cap * c
+      const dotted = m.measureText("i")
+      const dotless = m.measureText("ı")
+      // Only when the face really has a dotless i, so nothing is drawn twice.
+      if (o.roundDots && word.includes("i") && dotless.actualBoundingBoxAscent < dotted.actualBoundingBoxAscent * 0.9) {
+        const bare = word.replaceAll("i", "ı")
+        m.fillText(bare, x0, base)
+        const stem = dotless.actualBoundingBoxLeft + dotless.actualBoundingBoxRight
+        const top = base - dotted.actualBoundingBoxAscent
+        for (let k = word.indexOf("i"); k !== -1; k = word.indexOf("i", k + 1)) {
+          const left = x0 + m.measureText(bare.slice(0, k)).width
+          const cx = left + (dotless.actualBoundingBoxRight - dotless.actualBoundingBoxLeft) / 2
+          m.beginPath()
+          m.arc(cx, top + stem / 2, stem * 0.58, 0, Math.PI * 2)
+          m.fill()
+        }
+      } else {
+        m.fillText(word, x0, base)
+      }
       const img = m.getImageData(0, 0, w, h).data
 
       const gap = Math.max(3, o.dotGap)
