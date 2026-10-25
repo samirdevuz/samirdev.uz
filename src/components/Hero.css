@@ -2,19 +2,31 @@
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   padding: 120px 0 72px;
   border-bottom: 1px solid var(--line);
   isolation: isolate;
 }
 
-/* Animated topographic backdrop, fading out toward the bottom */
-.hero__topo {
+/* ASCII horizon: light pours down from the top over a dark curve, and the
+   copy sits on the dark ground below it. The field starts above the section
+   so its white-hot crown stays off screen and the nav keeps its contrast. */
+.hero__sky {
   position: absolute;
-  inset: 0;
+  inset: -28% 0 0;
+  height: auto;
   z-index: -1;
-  mask-image: linear-gradient(to bottom, black 40%, transparent 98%);
-  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 98%);
+}
+
+/* A soft shade under the nav so its links read over the brightest light. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 160px;
+  z-index: -1;
+  background: linear-gradient(to bottom, color-mix(in oklch, var(--bg) 55%, transparent), transparent);
+  pointer-events: none;
 }
 
 .hero__status {

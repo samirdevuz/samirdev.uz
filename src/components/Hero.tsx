@@ -1,5 +1,5 @@
 import { content } from '../content'
-import TopoField from './ui/topo-field'
+import GradientASCII from './ui/gradient-ascii'
 import './Hero.css'
 
 export function Hero() {
@@ -13,7 +13,7 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
-      <TopoField className="hero__topo" />
+      <GradientASCII className="hero__sky" shape="horizon" cellSize={16} glow={0.3} />
       <div className="container">
         <p className="hero__status mono reveal">
           <span className="hero__dot" aria-hidden="true" />

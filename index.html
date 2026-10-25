@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Samir Abdumo‘minov — Product builder</title>
     <meta name="description" content="Samir Abdumo‘minov (samirdevuz) — product builder from Sirdaryo, building useful products for the web." />
-    <meta name="theme-color" content="#f6f7fa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15171d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#110f18" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Samir Abdumo‘minov — Product builder" />
     <meta property="og:description" content="Building useful products for the web." />
@@ -27,8 +26,8 @@
         z-index: 100;
         display: grid;
         place-items: center;
-        background: #f6f7fa;
-        color: #1b1e27;
+        background: #110f18;
+        color: #eef0f4;
         font: 500 13px/1 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
         transition: opacity 0.35s ease, visibility 0.35s;
       }
@@ -42,7 +41,7 @@
         width: 140px;
       }
       #loader .l-caret {
-        color: #2f9e55;
+        color: #4cc3f5;
         animation: l-blink 0.5s steps(1) infinite;
       }
       #loader .l-bar {
@@ -55,7 +54,7 @@
         content: '';
         display: block;
         height: 100%;
-        background: #c9f05b;
+        background: #a9c8ff;
         transform-origin: left;
         animation: l-fill 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
@@ -65,10 +64,6 @@
       }
       @keyframes l-blink {
         50% { opacity: 0; }
-      }
-      @media (prefers-color-scheme: dark) {
-        #loader { background: #15171d; color: #eef0f4; }
-        #loader .l-caret { color: #a6e36b; }
       }
       @media (prefers-reduced-motion: reduce) {
         #loader .l-caret { animation: none; }
