@@ -68,6 +68,35 @@
   transform: translateX(3px);
 }
 
+/* Featured: a larger name, a badge, and the link already lit. */
+.work__row--featured .work__name {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+}
+
+.work__badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--mark);
+  color: var(--mark-fg);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.work__row--featured .work__text {
+  color: var(--fg);
+}
+
+.work__row--featured .work__link {
+  color: var(--accent);
+}
+
 /* The open slot reads as an empty placeholder until hovered. */
 .work__row--open .work__name {
   color: var(--muted);

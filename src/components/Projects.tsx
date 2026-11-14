@@ -9,9 +9,17 @@ export function Projects() {
       <ul className="work">
         {content.projects.map((p) => (
           <li key={p.name} className="reveal">
-            <a className="work__row" href={p.href} target="_blank" rel="noreferrer">
+            <a
+              className={p.featured ? 'work__row work__row--featured' : 'work__row'}
+              href={p.href}
+              target="_blank"
+              rel="noreferrer"
+            >
               <span className="work__head">
-                <span className="work__name">{p.name}</span>
+                <span className="work__name">
+                  {p.name}
+                  {p.featured && <span className="work__badge mono">Featured</span>}
+                </span>
                 <span className="work__tags mono">{p.tags.join(' · ')}</span>
               </span>
               <span className="work__text">{p.text}</span>

@@ -6,6 +6,8 @@ export type Project = {
   text: string
   tags: string[]
   href: string
+  // Highlights the row in the projects list. Keep featured projects at the top.
+  featured?: boolean
 }
 export type Exploration = { title: string; text: string; when: string }
 // `file` is an svgl.app logo; leave it out to draw the icon in Stack.tsx instead.
@@ -28,6 +30,13 @@ export const content = {
   },
 
   projects: [
+    {
+      name: 'Yozma',
+      text: 'Voice typing in Uzbek for Windows and Mac: hold a key, speak, and clean text appears in any app. Keeps Uzbek, Russian and English in one sentence, learns your vocabulary and matches the tone to each app.',
+      tags: ['Desktop app', 'Voice AI'],
+      href: 'https://yozma.app',
+      featured: true,
+    },
     {
       name: 'MilliyPrep',
       text: 'Milliy Sertifikat exam prep in Uzbek: a study plan built around your goal score, topic practice, timed mini-tests, progress tracking and an AI tutor.',
