@@ -1,11 +1,21 @@
+/* Columns are defined once on the list and shared by every row through
+   subgrid, so the text and link columns line up across all projects. */
 .work {
   list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto;
+  column-gap: 32px;
+}
+
+.work > li,
+.work__row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
 }
 
 .work__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto;
-  gap: 8px 32px;
+  row-gap: 8px;
   align-items: baseline;
   padding: 22px 0;
   border-bottom: 1px solid var(--line);
@@ -120,8 +130,8 @@
 }
 
 @media (max-width: 860px) {
-  .work__row {
-    grid-template-columns: 1fr;
+  .work {
+    grid-template-columns: minmax(0, 1fr);
   }
   .work__head {
     grid-template-columns: auto 1fr;
